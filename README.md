@@ -1,0 +1,2 @@
+# recompensa
+FiveM ESX Script
