@@ -188,7 +188,7 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 							xPlayer.addInventoryItem(data[1].data1, data[1].data2)
 							exports.JD_logs:discord('**'..GetPlayerName(source)..'** utilizou o seguinte código: **'..args[1]..'** e recebeu: **'..data[1].data2..'x** de **'..data[1].data1..'**', source, 0, '#00FF00', '')
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu: "..data[1].data2.."x de "..data[1].data1.."." }, color = 255,255,255 })
-						elseif (data[1].type == "weapon") then
+						elseif (data[1].type == "weapon") then -- Arma
 							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
