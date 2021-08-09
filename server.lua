@@ -132,19 +132,19 @@ end
 
 
 --[[
-	Verificar SteamId
+	Verificar SteamId Gerar Código
 ]]
 RegisterCommand("codigorecompensa", function(source, args, rawCommand)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local ver = false
 		
 		for k, v in pairs(Config.Steams) do
-				if xPlayer.identifier == v.id then
-					ver = true
-					break
-				else
-					ver = false
-				end
+			if xPlayer.identifier == v.id then
+				ver = true
+				break
+			else
+				ver = false
+			end
 		end
 		
 		if ver then
