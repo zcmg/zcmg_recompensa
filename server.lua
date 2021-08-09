@@ -29,7 +29,7 @@ function RandomCodeGenerator()
 end
 
 --[[
-	Gerar o código
+Função Gerar o Código
 ]]
 function gerar(source, args, rawCommand)
 		if (args[1] == nil) then
@@ -132,8 +132,38 @@ end
 
 
 --[[
-	Verificar SteamId Gerar Código
+Função Apagar o Código
 ]]
+function apagar(source, args, rawCommand)
+	
+end
+
+--[[
+Apagar Código
+]]
+RegisterCommand("apagarrecompensa", function(source, args, rawCommand)
+		local xPlayer = ESX.GetPlayerFromId(source)
+		local ver = false
+		
+		for k, v in pairs(Config.Steams) do
+			if xPlayer.identifier == v.id then
+				ver = true
+				break
+			else
+				ver = false
+			end
+		end
+		
+		if ver then
+			apagar(source, args, rawCommand)
+		else
+			erro(source)
+		end
+end, true)
+
+--[[
+Gerar Código
+]]--
 RegisterCommand("codigorecompensa", function(source, args, rawCommand)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local ver = false
@@ -155,7 +185,7 @@ RegisterCommand("codigorecompensa", function(source, args, rawCommand)
 end, true)
 
 --[[
-	Regastar a recompensa
+Regastar a recompensa
 ]]
 RegisterCommand("recompensa", function(source, args, rawCommand)
 	local _source = source
