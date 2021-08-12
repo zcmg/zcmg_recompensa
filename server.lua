@@ -87,7 +87,7 @@ function gerar(source, args, rawCommand)
 			else
 				--Codigo em costrução V1.1 Ainda por testar
 				--[[
-				if (args[3] == "weapon_" or args[3] == "" )
+				if (args[3] == "weapon_dagger" or args[3] == "weapon_bat" or args[3] == "weapon_bottle" or args[3] == "weapon_crowbar" or args[3] == "weapon_flashlight" or args[3] == "weapon_golfclub" )
 					--Gerar o código	
 				else
 					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Tipo de arma não é válido." }, color = 255,255,255 })
