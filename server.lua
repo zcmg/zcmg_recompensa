@@ -127,6 +127,9 @@ function gerar(source, args, rawCommand)
 		end
 end	
 
+--[[
+Mensagem Erro
+]]
 function erro(source)
 	TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Não tem premisões para fazer isto!"}, color = 255,255,255 })
 end
