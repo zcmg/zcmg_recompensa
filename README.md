@@ -13,3 +13,5 @@ Dependecias:
 -mysql-async
 -es_extended
 -JD_Logs
+
+https://github.com/zcmg/recompensa
