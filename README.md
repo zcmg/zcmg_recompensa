@@ -9,6 +9,8 @@ Desenvolvido por: zcmg#5307
 
 /recompensa - Resgatar um código de recompensa
 
+/apagarrecompensa - Apagar um código gerado
+
 Dependecias:
 -async
 -mysql-async
