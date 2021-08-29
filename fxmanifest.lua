@@ -1,8 +1,8 @@
 fx_version 'cerulean'
 games { 'gta5' }
 
-author '<~ZC~>#5307'
-description 'Porto RP'
+author 'zcmg#5307'
+description 'V1.1'
 
 client_scripts {
 	'client.lua',
