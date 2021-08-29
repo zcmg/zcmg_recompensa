@@ -8,6 +8,9 @@ AddEventHandler('onClientResourceStart', function (resourceName)
         TriggerEvent('chat:addSuggestion', '/recompensa', 'Resgatar um código de recompensa', {
             { name="código", help="Digite o código que deseja resgatar." }
         })
+		TriggerEvent('chat:addSuggestion', '/apagarrecompensa', 'Apagar um código gerado', {
+            { name="código", help="Digite o código que deseja apagar." }
+        })
     end
 end)
 
