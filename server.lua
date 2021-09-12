@@ -4,6 +4,12 @@ Config.Steams = {  --Steam ids de quem pode gerar os codigos
 	{id ="steam:11000010067f1d8"}
 }
 
+--Bots Discord Logs
+Config.BotG = '' -- Gerar codigo
+Config.BotA = '' -- Apagar codigo
+Config.BotU = '' -- Utilizar codigo
+
+
 ESX = nil 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
@@ -26,7 +32,7 @@ function gerar(source, args, rawCommand)
 			else
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Tipo desconhecido. Tipos possíveis: item, cash, bank, black_money, weapon" }, color = 255,255,255 })
 			end	
-		elseif (string.lower(args[1]) == "bank") then -- Banco
+		elseif (string.lower(args[1]) == "bank") then
 			RandomCode = RandomCodeGenerator()
 			MySQL.Async.execute("INSERT INTO recompensa(code, type, data1) VALUES (@code,@type,@data1)", {
 				['@code'] = RandomCode,
@@ -34,10 +40,10 @@ function gerar(source, args, rawCommand)
 				['@data1'] = args[2]
 			})
 			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-			exports.JD_logs:discord('**'..GetPlayerName(source)..'** gerou o seguinte código: **'..RandomCode..'**', source, 0, '#00FF00', '')	
+			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)	
 			Wait(5)
 			RandomCode = ""
-		elseif (string.lower(args[1]) == "black_money") then -- Dinheiro Sujo
+		elseif (string.lower(args[1]) == "black_money") then
 			RandomCode = RandomCodeGenerator()
 			MySQL.Async.execute("INSERT INTO recompensa(code, type, data1) VALUES (@code,@type,@data1)", {
 				['@code'] = RandomCode,
@@ -45,10 +51,10 @@ function gerar(source, args, rawCommand)
 				['@data1'] = args[2]
 			})
 			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-			exports.JD_logs:discord('**'..GetPlayerName(source)..'** gerou o seguinte código: **'..RandomCode..'**', source, 0, '#00FF00', '')	
+			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
 			Wait(5)
 			RandomCode = ""
-		elseif (string.lower(args[1]) == "cash") then -- Dinheiro
+		elseif (string.lower(args[1]) == "cash") then
 			RandomCode = RandomCodeGenerator()
 			MySQL.Async.execute("INSERT INTO recompensa (code, type, data1) VALUES (@code,@type,@data1)", {
 				['@code'] = RandomCode,
@@ -56,10 +62,10 @@ function gerar(source, args, rawCommand)
 				['@data1'] = args[2]
 			})
 			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-			exports.JD_logs:discord('**'..GetPlayerName(source)..'** gerou o seguinte código: **'..RandomCode..'**', source, 0, '#00FF00', '')
+			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
 			Wait(5)
 			RandomCode = ""
-		elseif (string.lower(args[1]) == "weapon") then -- Arma
+		elseif (string.lower(args[1]) == "weapon") then
 			if (args[2] == nil or args[3] == nil) then
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos." }, color = 255,255,255 })
 			else
@@ -88,14 +94,14 @@ function gerar(source, args, rawCommand)
 						['@data2'] = args[3]
 					})
 					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-					exports.JD_logs:discord('**'..GetPlayerName(source)..'** gerou o seguinte código: **'..RandomCode..'**', source, 0, '#00FF00', '')
+					logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
 					Wait(5)
 					RandomCode = ""
 				else
 					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Tipo de arma não é válido." }, color = 255,255,255 })
 				end
 			end
-		elseif (string.lower(args[1]) == "item") then -- Item
+		elseif (string.lower(args[1]) == "item") then
 			if (args[2] == nil or args[3] == nil) then
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos." }, color = 255,255,255 })
 			else
@@ -107,7 +113,7 @@ function gerar(source, args, rawCommand)
 					['@data2'] = args[3]
 				})
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-				exports.JD_logs:discord('**'..GetPlayerName(source)..'** gerou o seguinte código: **'..RandomCode..'**', source, 0, '#00FF00', '')
+				logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
 				Wait(5)
 				RandomCode = ""
 			end		
@@ -129,11 +135,16 @@ function apagar(source, args, rawCommand)
 				MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
-				exports.JD_logs:discord('**'..GetPlayerName(source)..'** apagou o seguinte código: **'..args[1]..'**', source, 0, '#00FF00', '')
+				logs('**'..GetPlayerName(source)..' ('..source..')** apagou o seguinte código: **'..args[1]..'**', Config.BotA)
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código apagado com sucesso!" }, color = 255,255,255 })
 							
 			end
 	end)	
+end
+
+function logs(msg,canal)
+	
+	PerformHttpRequest(canal, function(err, text, headers) end, 'POST', json.encode({username = 'zcng_recompensa', content =msg}), { ['Content-Type'] = 'application/json' })
 end
 
 function RandomCodeGenerator()
@@ -209,40 +220,40 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Código de recompensa não é válido ou já foi utilizado!" }, color = 255,255,255 })
 			else
 				if (args[1] == data[1].code) then
-						if (data[1].type == "black_money") then -- Dinheiro Sujo
+						if (data[1].type == "black_money") then
 							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addAccountMoney('black_money', tonumber(data[1].data1))
-							exports.JD_logs:discord('**'..GetPlayerName(source)..'** utilizou o seguinte código: **'..args[1]..'** e e recebeu **'..tonumber(data[1].data1)..'€** de dinheiro sujo', source, 0, '#00FF00', '')
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e e recebeu **'..tonumber(data[1].data1)..'€** de dinheiro sujo', Config.BotU)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu  "..data[1].data1.."€ na sua conta bancária." }, color = 255,255,255 })
 						elseif (data[1].type == "bank") then
 							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addAccountMoney('bank', tonumber(data[1].data1))
-							exports.JD_logs:discord('**'..GetPlayerName(source)..'** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **'..tonumber(data[1].data1)..'€**', source, 0, '#00FF00', '')
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **', Config.BotU)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu  "..data[1].data1.."€ na sua conta bancária." }, color = 255,255,255 })
 						elseif (data[1].type == "cash") then
 							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addMoney(data[1].data1)
-							exports.JD_logs:discord('**'..GetPlayerName(source)..'** utilizou o seguinte código: **'..args[1]..'** e recebeu **'..tonumber(data[1].data1)..'€**', source, 0, '#00FF00', '')
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu **'..tonumber(data[1].data1)..'€**', Config.BotU)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu "..data[1].data1.."€ de dinheiro." }, color = 255,255,255 })
 						elseif (data[1].type == "item") then
 							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addInventoryItem(data[1].data1, data[1].data2)
-							exports.JD_logs:discord('**'..GetPlayerName(source)..'** utilizou o seguinte código: **'..args[1]..'** e recebeu: **'..data[1].data2..'x** de **'..data[1].data1..'**', source, 0, '#00FF00', '')
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu: **'..data[1].data2..'x** de **'..data[1].data1..'**', Config.BotU)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu: "..data[1].data2.."x de "..data[1].data1.."." }, color = 255,255,255 })
-						elseif (data[1].type == "weapon") then -- Arma
+						elseif (data[1].type == "weapon") then
 							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addWeapon(tostring(data[1].data1), data[1].data2)
-							exports.JD_logs:discord('**'..GetPlayerName(source)..'** utilizou o seguinte código: **'..args[1]..'** e recebeu a arma: **'..data[1].data1..'** com **'..data[1].data2..'** balas.', source, 0, '#00FF00', '')
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu a arma: **'..data[1].data1..'** com **'..data[1].data2..'** balas.', Config.BotU)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu a arma: "..data[1].data1.." com "..data[1].data2.." balas." }, color = 255,255,255 })
 						end
 				else
