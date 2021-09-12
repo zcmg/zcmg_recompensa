@@ -5,13 +5,18 @@ Config.Steams = {  --Steam ids de quem pode gerar os codigos
 }
 
 --Bots Discord Logs
-Config.BotG = '' -- Gerar codigo
-Config.BotA = '' -- Apagar codigo
-Config.BotU = '' -- Utilizar codigo
-
+Config.BotG = 'https://discord.com/api/webhooks/886603274168442891/2Xib9VbOnm6KJ3-SjpFbPWnISvUe3yn4SSvCFC9ZA8NjV-gIWpBn6cOge8KN96PyVhgF' -- Gerar codigo
+Config.BotA = 'https://discord.com/api/webhooks/886603274168442891/2Xib9VbOnm6KJ3-SjpFbPWnISvUe3yn4SSvCFC9ZA8NjV-gIWpBn6cOge8KN96PyVhgF' -- Apagar codigo
+Config.BotU = 'https://discord.com/api/webhooks/886603274168442891/2Xib9VbOnm6KJ3-SjpFbPWnISvUe3yn4SSvCFC9ZA8NjV-gIWpBn6cOge8KN96PyVhgF' -- Utilizar codigo
 
 ESX = nil 
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+Citizen.CreateThread(function()
+	while ESX == nil do
+	  TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+	  Citizen.Wait(0)
+	end
+  end)
 
 local RandomCode = ""
 
@@ -29,8 +34,10 @@ function gerar(source, args, rawCommand)
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa item 'nome spawn item' 'quantidade items'" }, color = 255,255,255 })
 			elseif (args[1] == "weapon" and args[2] == nil) then
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa weapon 'nome spawn arma' 'numero_balas'" }, color = 255,255,255 })
+			elseif (args[1] == "car" and args[2] == nil) then
+				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa car 'nome spawn do carro'" }, color = 255,255,255 })
 			else
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Tipo desconhecido. Tipos possíveis: item, cash, bank, black_money, weapon" }, color = 255,255,255 })
+				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Tipo desconhecido. Tipos possíveis: item, cash, bank, black_money, weapon, car" }, color = 255,255,255 })
 			end	
 		elseif (string.lower(args[1]) == "bank") then
 			RandomCode = RandomCodeGenerator()
@@ -43,6 +50,18 @@ function gerar(source, args, rawCommand)
 			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)	
 			Wait(5)
 			RandomCode = ""
+		elseif (string.lower(args[1]) == "car") then
+			RandomCode = RandomCodeGenerator()
+			MySQL.Async.execute("INSERT INTO recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
+				['@code'] = RandomCode,
+				['@type'] = "car", 
+				['@data1'] = args[2],
+				['@data2'] = args[3]
+			})
+			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
+			Wait(5)
+			RandomCode = ""		
 		elseif (string.lower(args[1]) == "black_money") then
 			RandomCode = RandomCodeGenerator()
 			MySQL.Async.execute("INSERT INTO recompensa(code, type, data1) VALUES (@code,@type,@data1)", {
@@ -116,7 +135,7 @@ function gerar(source, args, rawCommand)
 				logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
 				Wait(5)
 				RandomCode = ""
-			end		
+			end	
 		end
 end	
 
@@ -143,12 +162,10 @@ function apagar(source, args, rawCommand)
 end
 
 function logs(msg,canal)
-	
 	PerformHttpRequest(canal, function(err, text, headers) end, 'POST', json.encode({username = 'zcng_recompensa', content =msg}), { ['Content-Type'] = 'application/json' })
 end
 
 function RandomCodeGenerator()
-
 		local chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 	
@@ -186,6 +203,8 @@ RegisterCommand("apagarrecompensa", function(source, args, rawCommand)
 			erro(source)
 		end
 end, true)
+
+
 
 RegisterCommand("codigorecompensa", function(source, args, rawCommand)
 		local xPlayer = ESX.GetPlayerFromId(source)
@@ -255,6 +274,16 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 							xPlayer.addWeapon(tostring(data[1].data1), data[1].data2)
 							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu a arma: **'..data[1].data1..'** com **'..data[1].data2..'** balas.', Config.BotU)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu a arma: "..data[1].data1.." com "..data[1].data2.." balas." }, color = 255,255,255 })
+						elseif (data[1].type == "car") then
+		
+							--[[MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+								['@code'] = args[1],
+							})]]--
+
+
+							TriggerClientEvent('recompensa:car', source, data[1].data1)
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu o carro: **'..data[1].data1..'**' , Config.BotU)
+							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu o carro : "..data[1].data1}, color = 255,255,255 })
 						end
 				else
 					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Código de recompensa não é válido ou já foi utilizado!" }, color = 255,255,255 })
@@ -263,3 +292,20 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 		end)
 	end
 end, false)
+
+
+RegisterServerEvent('recompensa:dono')
+AddEventHandler('recompensa:dono', function (vehicleProps)
+	local _source = source
+	local xPlayer = ESX.GetPlayerFromId(_source)
+
+
+	MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle) VALUES (@owner, @plate, @vehicle)',
+	{
+		['@owner']   = xPlayer.identifier,
+		['@plate']   = vehicleProps.plate,
+		['@vehicle'] = json.encode(vehicleProps)
+	})
+	--TriggerClientEvent('recompensa:car', vehicleProps, vehicleProps.plate)
+	--exports.JD_logs:discord(GetPlayerName(_source)..' comprou um carro com a matricula '..vehicleProps.plate, _source, 0, '#00FF00', 'CARROS')
+end)
