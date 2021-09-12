@@ -2,7 +2,7 @@ fx_version 'cerulean'
 games { 'gta5' }
 
 author 'zcmg#5307'
-description 'V1.2'
+description 'V1.3'
 
 client_scripts {
 	'client.lua',
