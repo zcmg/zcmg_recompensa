@@ -12,7 +12,6 @@ Desenvolvido por: zcmg#5307
 /apagarrecompensa - Apagar um código gerado
 
 Dependecias:
--async
 -mysql-async
 -es_extended
 
