@@ -276,9 +276,9 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu a arma: "..data[1].data1.." com "..data[1].data2.." balas." }, color = 255,255,255 })
 						elseif (data[1].type == "car") then
 		
-							--[[MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
 								['@code'] = args[1],
-							})]]--
+							})
 
 
 							TriggerClientEvent('recompensa:car', source, data[1].data1)
@@ -306,6 +306,4 @@ AddEventHandler('recompensa:dono', function (vehicleProps)
 		['@plate']   = vehicleProps.plate,
 		['@vehicle'] = json.encode(vehicleProps)
 	})
-	--TriggerClientEvent('recompensa:car', vehicleProps, vehicleProps.plate)
-	--exports.JD_logs:discord(GetPlayerName(_source)..' comprou um carro com a matricula '..vehicleProps.plate, _source, 0, '#00FF00', 'CARROS')
 end)
