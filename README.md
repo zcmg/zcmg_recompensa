@@ -1,4 +1,3 @@
-# recompensa
 FiveM ESX Script
 
 Script para poder devolver items/dinheiro/armas/carrros etc aos players
