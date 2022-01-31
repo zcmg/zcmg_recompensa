@@ -1,6 +1,6 @@
 FiveM ESX Script
 
-Script para poder devolver items/dinheiro/armas/carrros etc aos players
+Script para poder devolver items/dinheiro/armas/carros etc aos players
 
 Desenvolvido por: zcmg#5307
 
