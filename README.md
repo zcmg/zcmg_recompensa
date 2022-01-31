@@ -14,4 +14,4 @@ Dependecias:
 -mysql-async
 -es_extended
 
-https://github.com/zcmg/recompensa
+https://github.com/zcmg/zcmg_recompensa
