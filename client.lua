@@ -1,11 +1,3 @@
-Config = {}
-
---Gerar as matriculas [Não mexer]
-Config.PlateLetters  = 3
-Config.PlateNumbers  = 3
-Config.PlateUseSpace = true
-
-
 ESX = nil
 
 Citizen.CreateThread(function()
@@ -79,7 +71,7 @@ function GeneratePlate()
 			generatedPlate = string.upper(GetRandomLetter(Config.PlateLetters) .. GetRandomNumber(Config.PlateNumbers))
 		end
 
-		ESX.TriggerServerCallback('d3x_vehicleshop:isPlateTaken', function (isPlateTaken)
+		ESX.TriggerServerCallback('zcmg_recompensa:isPlateTaken', function (isPlateTaken)
 			if not isPlateTaken then
 				doBreak = true
 			end
@@ -94,8 +86,8 @@ function GeneratePlate()
 end
 
 
-RegisterNetEvent('recompensa:car')
-AddEventHandler('recompensa:car', function(car)
+RegisterNetEvent('zcmg_recompensa:car')
+AddEventHandler('zcmg_recompensa:car', function(car)
 	local playerPed = PlayerPedId()
 	local playerpos = GetEntityCoords(playerPed)
 	local matricula = GeneratePlate()
@@ -103,7 +95,7 @@ AddEventHandler('recompensa:car', function(car)
     ESX.Game.SpawnVehicle(car, playerpos, 59.24, function(vehicle)
 		local vehicleProps = ESX.Game.GetVehicleProperties(vehicle)
 		vehicleProps.plate = matricula
-		TriggerServerEvent('recompensa:dono', vehicleProps)
+		TriggerServerEvent('zcmg_recompensa:dono', vehicleProps)
 
 		TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
 		SetVehicleNumberPlateText(vehicle, matricula)

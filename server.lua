@@ -1,22 +1,6 @@
-Config = {}
-Config.Steams = {  --Steam ids de quem pode gerar os codigos
-	{id ="steam:11000010064f1d9"}, -- Steam ID zcmg
-	{id ="steam:11000010067f1d8"}
-}
-
---Bots Discord Logs
-Config.BotG = 'https://discord.com/api/webhooks/886603274168442891/2Xib9VbOnm6KJ3-SjpFbPWnISvUe3yn4SSvCFC9ZA8NjV-gIWpBn6cOge8KN96PyVhgF' -- Gerar codigo
-Config.BotA = 'https://discord.com/api/webhooks/886603274168442891/2Xib9VbOnm6KJ3-SjpFbPWnISvUe3yn4SSvCFC9ZA8NjV-gIWpBn6cOge8KN96PyVhgF' -- Apagar codigo
-Config.BotU = 'https://discord.com/api/webhooks/886603274168442891/2Xib9VbOnm6KJ3-SjpFbPWnISvUe3yn4SSvCFC9ZA8NjV-gIWpBn6cOge8KN96PyVhgF' -- Utilizar codigo
-
 ESX = nil 
 
-Citizen.CreateThread(function()
-	while ESX == nil do
-	  TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-	  Citizen.Wait(0)
-	end
-  end)
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 local RandomCode = ""
 
@@ -41,47 +25,47 @@ function gerar(source, args, rawCommand)
 			end	
 		elseif (string.lower(args[1]) == "bank") then
 			RandomCode = RandomCodeGenerator()
-			MySQL.Async.execute("INSERT INTO recompensa(code, type, data1) VALUES (@code,@type,@data1)", {
+			MySQL.Async.execute("INSERT INTO zcmg_recompensa(code, type, data1) VALUES (@code,@type,@data1)", {
 				['@code'] = RandomCode,
 				['@type'] = "bank", 
 				['@data1'] = args[2]
 			})
 			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)	
+			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)	
 			Wait(5)
 			RandomCode = ""
 		elseif (string.lower(args[1]) == "car") then
 			RandomCode = RandomCodeGenerator()
-			MySQL.Async.execute("INSERT INTO recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
+			MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
 				['@code'] = RandomCode,
 				['@type'] = "car", 
 				['@data1'] = args[2],
 				['@data2'] = args[3]
 			})
 			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
+			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 			Wait(5)
 			RandomCode = ""		
 		elseif (string.lower(args[1]) == "black_money") then
 			RandomCode = RandomCodeGenerator()
-			MySQL.Async.execute("INSERT INTO recompensa(code, type, data1) VALUES (@code,@type,@data1)", {
+			MySQL.Async.execute("INSERT INTO zcmg_recompensa(code, type, data1) VALUES (@code,@type,@data1)", {
 				['@code'] = RandomCode,
 				['@type'] = "black_money", 
 				['@data1'] = args[2]
 			})
 			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
+			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 			Wait(5)
 			RandomCode = ""
 		elseif (string.lower(args[1]) == "cash") then
 			RandomCode = RandomCodeGenerator()
-			MySQL.Async.execute("INSERT INTO recompensa (code, type, data1) VALUES (@code,@type,@data1)", {
+			MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1) VALUES (@code,@type,@data1)", {
 				['@code'] = RandomCode,
 				['@type'] = "cash", 
 				['@data1'] = args[2]
 			})
 			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
+			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 			Wait(5)
 			RandomCode = ""
 		elseif (string.lower(args[1]) == "weapon") then
@@ -106,14 +90,14 @@ function gerar(source, args, rawCommand)
 					or args[2] == "weapon_ball" or args[2] == "weapon_smokegrenade" or args[2] == "weapon_flare" or args[2] == "weapon_petrolcan" or args[2] == "gadget_parachute" or args[2] == "weapon_fireextinguisher"
 					or args[2] == "weapon_hazardcan") then
 					RandomCode = RandomCodeGenerator()
-					MySQL.Async.execute("INSERT INTO recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
+					MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
 						['@code'] = RandomCode,
 						['@type'] = "weapon", 
 						['@data1'] = args[2],
 						['@data2'] = args[3]
 					})
 					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-					logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
+					logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 					Wait(5)
 					RandomCode = ""
 				else
@@ -125,14 +109,14 @@ function gerar(source, args, rawCommand)
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos." }, color = 255,255,255 })
 			else
 				RandomCode = RandomCodeGenerator()
-				MySQL.Async.execute("INSERT INTO recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
+				MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
 					['@code'] = RandomCode,
 					['@type'] = "item", 
 					['@data1'] = args[2],
 					['@data2'] = args[3]
 				})
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-				logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG)
+				logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 				Wait(5)
 				RandomCode = ""
 			end	
@@ -145,25 +129,27 @@ function erro(source)
 end
 
 function apagar(source, args, rawCommand)
-	MySQL.Async.fetchAll('SELECT * FROM `recompensa` WHERE `code` = @code', {
+	MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
 				['@code'] = args[1]
 		}, function(data)
 			if (json.encode(data) == "[]" or json.encode(data) == "null") then
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Código de recompensa não é válido ou já foi utilizado!" }, color = 255,255,255 })
 			else
-				MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+				MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
-				logs('**'..GetPlayerName(source)..' ('..source..')** apagou o seguinte código: **'..args[1]..'**', Config.BotA)
+				logs('**'..GetPlayerName(source)..' ('..source..')** apagou o seguinte código: **'..args[1]..'**', Config.BotA, Config.BotA_Cor)
 				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código apagado com sucesso!" }, color = 255,255,255 })
 							
 			end
 	end)	
 end
 
-function logs(msg,canal)
-	PerformHttpRequest(canal, function(err, text, headers) end, 'POST', json.encode({username = 'zcng_recompensa', content =msg}), { ['Content-Type'] = 'application/json' })
+function logs(msg, canal, cor)
+	local corfinal = tonumber(cor:gsub("#",""),16)
+	PerformHttpRequest(canal, function(err, text, headers) end, 'POST', json.encode({username = 'ESX Developer Scripts', embeds = {{["color"] = corfinal, ["author"] = {["name"] = 'Esx Developer Portugal', ["icon_url"] = 'https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png'}, ["description"] = msg, ["footer"] = {["text"] = "Esx Developer Portugal - "..os.date("%x %X %p"),["icon_url"] = "https://media.discordapp.net/attachments/878328503148355584/918644161018728528/FiveM-Logo2_tools.png",},}}, avatar_url = 'https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png'}), { ['Content-Type'] = 'application/json' })
 end
+
 
 function RandomCodeGenerator()
 		local chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -205,7 +191,6 @@ RegisterCommand("apagarrecompensa", function(source, args, rawCommand)
 end, true)
 
 
-
 RegisterCommand("codigorecompensa", function(source, args, rawCommand)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local ver = false
@@ -232,7 +217,7 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 	if (args[1] == nil) then 
 			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Têm que preencher o código!" }, color = 255,255,255 })
 	else
-    	MySQL.Async.fetchAll('SELECT * FROM `recompensa` WHERE `code` = @code', {
+    	MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
 				['@code'] = args[1]
 		}, function(data)
 			if (json.encode(data) == "[]" or json.encode(data) == "null") then
@@ -240,49 +225,47 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 			else
 				if (args[1] == data[1].code) then
 						if (data[1].type == "black_money") then
-							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addAccountMoney('black_money', tonumber(data[1].data1))
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e e recebeu **'..tonumber(data[1].data1)..'€** de dinheiro sujo', Config.BotU)
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e e recebeu **'..tonumber(data[1].data1)..'€** de dinheiro sujo', Config.BotU, Config.BotU_Cor)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu  "..data[1].data1.."€ na sua conta bancária." }, color = 255,255,255 })
 						elseif (data[1].type == "bank") then
-							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addAccountMoney('bank', tonumber(data[1].data1))
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **', Config.BotU)
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **', Config.BotU, Config.BotU_Cor)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu  "..data[1].data1.."€ na sua conta bancária." }, color = 255,255,255 })
 						elseif (data[1].type == "cash") then
-							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addMoney(data[1].data1)
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu **'..tonumber(data[1].data1)..'€**', Config.BotU)
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu **'..tonumber(data[1].data1)..'€**', Config.BotU, Config.BotU_Cor)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu "..data[1].data1.."€ de dinheiro." }, color = 255,255,255 })
 						elseif (data[1].type == "item") then
-							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addInventoryItem(data[1].data1, data[1].data2)
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu: **'..data[1].data2..'x** de **'..data[1].data1..'**', Config.BotU)
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu: **'..data[1].data2..'x** de **'..data[1].data1..'**', Config.BotU, Config.BotU_Cor)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu: "..data[1].data2.."x de "..data[1].data1.."." }, color = 255,255,255 })
 						elseif (data[1].type == "weapon") then
-							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addWeapon(tostring(data[1].data1), data[1].data2)
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu a arma: **'..data[1].data1..'** com **'..data[1].data2..'** balas.', Config.BotU)
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu a arma: **'..data[1].data1..'** com **'..data[1].data2..'** balas.', Config.BotU, Config.BotU_Cor)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu a arma: "..data[1].data1.." com "..data[1].data2.." balas." }, color = 255,255,255 })
 						elseif (data[1].type == "car") then
-		
-							MySQL.Async.execute("DELETE FROM recompensa WHERE code = @code;", {
+							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 
-
-							TriggerClientEvent('recompensa:car', source, data[1].data1)
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu o carro: **'..data[1].data1..'**' , Config.BotU)
+							TriggerClientEvent('zcmg_recompensa:car', source, data[1].data1)
+							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu o carro: **'..data[1].data1..'**' , Config.BotU, Config.BotU_Cor)
 							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu o carro : "..data[1].data1}, color = 255,255,255 })
 						end
 				else
@@ -294,8 +277,8 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 end, false)
 
 
-RegisterServerEvent('recompensa:dono')
-AddEventHandler('recompensa:dono', function (vehicleProps)
+RegisterServerEvent('zcmg_recompensa:dono')
+AddEventHandler('zcmg_recompensa:dono', function (vehicleProps)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
 
@@ -306,4 +289,13 @@ AddEventHandler('recompensa:dono', function (vehicleProps)
 		['@plate']   = vehicleProps.plate,
 		['@vehicle'] = json.encode(vehicleProps)
 	})
+end)
+
+
+ESX.RegisterServerCallback('zcmg_recompensa:isPlateTaken', function (source, cb, plate)
+	MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE plate = @plate', {
+		['@plate'] = plate
+	}, function (result)
+		cb(result[1] ~= nil)
+	end)
 end)

@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `recompensa`;
-CREATE TABLE `recompensa` (
+DROP TABLE IF EXISTS `zcmg_recompensa`;
+CREATE TABLE `zcmg_recompensa` (
   `code` text DEFAULT NULL,
   `type` text DEFAULT NULL,
   `data1` text DEFAULT NULL, 
