@@ -35,6 +35,7 @@ function gerar(source, args, rawCommand)
 			Wait(5)
 			RandomCode = ""
 		elseif (string.lower(args[1]) == "car") then
+			--if Config.CarsVerification then
 			--if args[2] == Config.Cars then
 				RandomCode = RandomCodeGenerator()
 				MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
