@@ -35,17 +35,21 @@ function gerar(source, args, rawCommand)
 			Wait(5)
 			RandomCode = ""
 		elseif (string.lower(args[1]) == "car") then
-			RandomCode = RandomCodeGenerator()
-			MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
-				['@code'] = RandomCode,
-				['@type'] = "car", 
-				['@data1'] = args[2],
-				['@data2'] = args[3]
-			})
-			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
-			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
-			Wait(5)
-			RandomCode = ""		
+			--if args[2] == Config.Cars then
+				RandomCode = RandomCodeGenerator()
+				MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
+					['@code'] = RandomCode,
+					['@type'] = "car", 
+					['@data1'] = args[2],
+					['@data2'] = args[3]
+				})
+				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+				logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
+				Wait(5)
+				RandomCode = ""
+			--else
+				--msg erro aqui
+			--end
 		elseif (string.lower(args[1]) == "black_money") then
 			RandomCode = RandomCodeGenerator()
 			MySQL.Async.execute("INSERT INTO zcmg_recompensa(code, type, data1) VALUES (@code,@type,@data1)", {
