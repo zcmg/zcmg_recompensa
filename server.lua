@@ -6,22 +6,22 @@ local RandomCode = ""
 
 function gerar(source, args, rawCommand)
 		if (args[1] == nil) then
-			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Têm que preencher os parametros para poder gerar o código." }, color = 255,255,255 })
+			TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Têm que preencher os parametros para poder gerar o código", 5000, 'erro')
 		elseif (args[1] ~= nil and args[2] == nil) then
 			if (args[1] == "bank" and args[2] == nil) then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa bank 'montante'" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos.</br> Usar: /codigorecompensa bank 'montante'", 5000, 'erro')
 			elseif (args[1] == "black_money" and args[2] == nil) then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa black_money 'montante'" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos.</br> Usar: /codigorecompensa black_money 'montante'", 5000, 'erro')
 			elseif (args[1] == "cash" and args[2] == nil) then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa cash 'montante'" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos.</br> Usar: /codigorecompensa cash 'montante'", 5000, 'erro')
 			elseif (args[1] == "item" and args[2] == nil) then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa item 'nome spawn item' 'quantidade items'" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos.</br> Usar: /codigorecompensa item 'nome spawn item' 'quantidade items'", 5000, 'erro')
 			elseif (args[1] == "weapon" and args[2] == nil) then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa weapon 'nome spawn arma' 'numero_balas'" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos.</br> Usar: /codigorecompensa weapon 'nome spawn arma' 'numero_balas'", 5000, 'erro')
 			elseif (args[1] == "car" and args[2] == nil) then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos. Usar: /codigorecompensa car 'nome spawn do carro'" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos.</br> Usar: /codigorecompensa car 'nome spawn do carro'", 5000, 'erro')
 			else
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Tipo desconhecido. Tipos possíveis: item, cash, bank, black_money, weapon, car" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Tipo desconhecido.</br> Tipos possíveis: item, cash, bank, black_money, weapon, car", 5000, 'erro')
 			end	
 		elseif (string.lower(args[1]) == "bank") then
 			RandomCode = RandomCodeGenerator()
@@ -30,7 +30,7 @@ function gerar(source, args, rawCommand)
 				['@type'] = "bank", 
 				['@data1'] = args[2]
 			})
-			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+			TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
 			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)	
 			Wait(5)
 			RandomCode = ""
@@ -53,12 +53,12 @@ function gerar(source, args, rawCommand)
 						['@data1'] = args[2],
 						['@data2'] = args[3]
 					})
-					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
 					logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 					Wait(5)
 					RandomCode = ""
 				else
-					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "O veiculo não se encontra na lista de veiculos autorizados" }, color = 255,255,255 })
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "O veiculo não se encontra na lista de veiculos autorizados", 5000, 'erro')
 				end
 			else
 				RandomCode = RandomCodeGenerator()
@@ -68,7 +68,7 @@ function gerar(source, args, rawCommand)
 					['@data1'] = args[2],
 					['@data2'] = args[3]
 				})
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
 				logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 				Wait(5)
 				RandomCode = ""
@@ -80,7 +80,7 @@ function gerar(source, args, rawCommand)
 				['@type'] = "black_money", 
 				['@data1'] = args[2]
 			})
-			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+			TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
 			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 			Wait(5)
 			RandomCode = ""
@@ -91,13 +91,13 @@ function gerar(source, args, rawCommand)
 				['@type'] = "cash", 
 				['@data1'] = args[2]
 			})
-			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+			TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
 			logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 			Wait(5)
 			RandomCode = ""
 		elseif (string.lower(args[1]) == "weapon") then
 			if (args[2] == nil or args[3] == nil) then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos." }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos", 5000, 'erro')
 			else
 				if (args[2] == "weapon_dagger" or args[2] == "weapon_bat" or args[2] == "weapon_bottle" or args[2] == "weapon_crowbar" or args[2] == "weapon_flashlight" or args[2] == "weapon_golfclub"
 				    or args[2] == "weapon_hammer" or args[2] == "weapon_hatchet" or args[2] == "weapon_knuckle" or args[2] == "weapon_knife" or args[2] == "weapon_machete" or args[2] == "weapon_switchblade"
@@ -123,17 +123,17 @@ function gerar(source, args, rawCommand)
 						['@data1'] = args[2],
 						['@data2'] = args[3]
 					})
-					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
 					logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 					Wait(5)
 					RandomCode = ""
 				else
-					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Tipo de arma não é válido." }, color = 255,255,255 })
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Tipo de arma não é válido", 5000, 'erro')
 				end
 			end
 		elseif (string.lower(args[1]) == "item") then
 			if (args[2] == nil or args[3] == nil) then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Argumentos inválidos." }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos", 5000, 'erro')
 			else
 				RandomCode = RandomCodeGenerator()
 				MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
@@ -142,7 +142,7 @@ function gerar(source, args, rawCommand)
 					['@data1'] = args[2],
 					['@data2'] = args[3]
 				})
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Códigos gerados com sucesso! O código é o seguinte: "..RandomCode}, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
 				logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 				Wait(5)
 				RandomCode = ""
@@ -151,23 +151,18 @@ function gerar(source, args, rawCommand)
 end	
 
 
-function erro(source)
-	TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Não tem premisões para fazer isto!"}, color = 255,255,255 })
-end
-
 function apagar(source, args, rawCommand)
 	MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
 				['@code'] = args[1]
 		}, function(data)
 			if (json.encode(data) == "[]" or json.encode(data) == "null") then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Código de recompensa não é válido ou já foi utilizado!" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código de recompensa não é válido ou já foi utilizado!", 5000, 'erro')
 			else
 				MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 				logs('**'..GetPlayerName(source)..' ('..source..')** apagou o seguinte código: **'..args[1]..'**', Config.BotA, Config.BotA_Cor)
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código apagado com sucesso!" }, color = 255,255,255 })
-							
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código apagado com sucesso!", 5000, 'sucesso')							
 			end
 	end)	
 end
@@ -213,7 +208,7 @@ RegisterCommand("apagarrecompensa", function(source, args, rawCommand)
 		if ver then
 			apagar(source, args, rawCommand)
 		else
-			erro(source)
+			TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Não tem premisões para fazer isto!", 5000, 'erro')
 		end
 end, true)
 
@@ -234,7 +229,7 @@ RegisterCommand("codigorecompensa", function(source, args, rawCommand)
 		if ver then
 			gerar(source, args, rawCommand)
 		else
-			erro(source)
+			TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Não tem premisões para fazer isto!", 5000, 'erro')
 		end
 end, true)
 
@@ -242,13 +237,13 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
 	if (args[1] == nil) then 
-			TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Têm que preencher o código!" }, color = 255,255,255 })
+		TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Têm que preencher o código!", 5000, 'erro')
 	else
     	MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
 				['@code'] = args[1]
 		}, function(data)
 			if (json.encode(data) == "[]" or json.encode(data) == "null") then
-				TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Código de recompensa não é válido ou já foi utilizado!" }, color = 255,255,255 })
+				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código de recompensa não é válido ou já foi utilizado!", 5000, 'erro')
 			else
 				if (args[1] == data[1].code) then
 						if (data[1].type == "black_money") then
@@ -257,35 +252,36 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 							})
 							xPlayer.addAccountMoney('black_money', tonumber(data[1].data1))
 							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e e recebeu **'..tonumber(data[1].data1)..'€** de dinheiro sujo', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu  "..data[1].data1.."€ na sua conta bancária." }, color = 255,255,255 })
+							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu  "..data[1].data1.."€ de dinheiro sujo.", 5000, 'sucesso')
+		
 						elseif (data[1].type == "bank") then
 							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addAccountMoney('bank', tonumber(data[1].data1))
 							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu  "..data[1].data1.."€ na sua conta bancária." }, color = 255,255,255 })
+							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu  "..data[1].data1.."€ na sua conta bancária.", 5000, 'sucesso')
 						elseif (data[1].type == "cash") then
 							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addMoney(data[1].data1)
 							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu **'..tonumber(data[1].data1)..'€**', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu "..data[1].data1.."€ de dinheiro." }, color = 255,255,255 })
+							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu  "..data[1].data1.."€ de dinheiro.", 5000, 'sucesso')
 						elseif (data[1].type == "item") then
 							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addInventoryItem(data[1].data1, data[1].data2)
 							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu: **'..data[1].data2..'x** de **'..data[1].data1..'**', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu: "..data[1].data2.."x de "..data[1].data1.."." }, color = 255,255,255 })
+							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu: "..data[1].data2.."x de "..data[1].data1, 5000, 'sucesso')
 						elseif (data[1].type == "weapon") then
 							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
 							})
 							xPlayer.addWeapon(tostring(data[1].data1), data[1].data2)
 							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu a arma: **'..data[1].data1..'** com **'..data[1].data2..'** balas.', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu a arma: "..data[1].data1.." com "..data[1].data2.." balas." }, color = 255,255,255 })
+							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu a arma: "..data[1].data1.." com "..data[1].data2.." balas", 5000, 'sucesso')
 						elseif (data[1].type == "car") then
 							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
 								['@code'] = args[1],
@@ -293,10 +289,11 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 
 							TriggerClientEvent('zcmg_recompensa:car', source, data[1].data1)
 							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu o carro: **'..data[1].data1..'**' , Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('chat:addMessage', source, { args = { '^7[^2Sucesso^7]^2', "Código resgatado com sucesso! Você recebeu o carro : "..data[1].data1}, color = 255,255,255 })
+							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu o carro : "..data[1].data1, 5000, 'sucesso')
+
 						end
 				else
-					TriggerClientEvent('chat:addMessage', source, { args = { '^7[^1Erro^7]^2', "Código de recompensa não é válido ou já foi utilizado!" }, color = 255,255,255 })
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código de recompensa não é válido ou já foi utilizado!", 5000, 'erro')
 				end
 			end
 		end)
