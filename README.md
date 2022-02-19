@@ -1,8 +1,8 @@
-FiveM ESX Script
+**FiveM ESX Script**
 
 Script para poder devolver items/dinheiro/armas/carros etc aos players
 
-Desenvolvido por: zcmg#5307
+Desenvolvido por: **zcmg#5307**
 
 /codigorecompensa - Gerar vários códigos de recompensa
 
@@ -10,8 +10,7 @@ Desenvolvido por: zcmg#5307
 
 /apagarrecompensa - Apagar um código gerado
 
-Dependecias:
--mysql-async
+Dependecias:</br>
+-zcmg_notificacao</br>
+-mysql-async</br>
 -es_extended
-
-https://github.com/zcmg/zcmg_recompensa
