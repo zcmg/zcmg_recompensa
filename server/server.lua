@@ -1,6 +1,6 @@
 ESX = nil 
 
-TriggerEvent('Config.ESXTrigger', function(obj) ESX = obj end)
+TriggerEvent(Config.ESXTrigger, function(obj) ESX = obj end)
 
 local RandomCode = ""
 
