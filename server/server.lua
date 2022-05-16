@@ -151,22 +151,6 @@ function gerar(source, args, rawCommand)
 end	
 
 
-function apagar(source, args, rawCommand)
-	MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
-				['@code'] = args[1]
-		}, function(data)
-			if (json.encode(data) == "[]" or json.encode(data) == "null") then
-				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código de recompensa não é válido ou já foi utilizado!", 5000, 'erro')
-			else
-				MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
-								['@code'] = args[1],
-							})
-				logs('**'..GetPlayerName(source)..' ('..source..')** apagou o seguinte código: **'..args[1]..'**', Config.BotA, Config.BotA_Cor)
-				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código apagado com sucesso!", 5000, 'sucesso')							
-			end
-	end)	
-end
-
 RegisterCommand("apagarrecompensa", function(source, args, rawCommand)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local ver = false
@@ -181,7 +165,19 @@ RegisterCommand("apagarrecompensa", function(source, args, rawCommand)
 		end
 		
 		if ver then
-			apagar(source, args, rawCommand)
+			MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
+				['@code'] = args[1]
+			}, function(data)
+				if (json.encode(data) == "[]" or json.encode(data) == "null") then
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código de recompensa não é válido ou já foi utilizado!", 5000, 'erro')
+				else
+					MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
+						['@code'] = args[1],
+					})
+					logs('**'..GetPlayerName(source)..' ('..source..')** apagou o seguinte código: **'..args[1]..'**', Config.BotA, Config.BotA_Cor)
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código apagado com sucesso!", 5000, 'sucesso')							
+				end
+			end)	
 		else
 			TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Não tem premisões para fazer isto!", 5000, 'erro')
 		end
