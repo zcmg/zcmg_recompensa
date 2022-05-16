@@ -24,6 +24,7 @@ function RandomCodeGenerator()
 end
 
 function verificaritem(item)
+	local result = MySQL.Sync.fetchAll('SELECT name FROM items WHERE name=')
 	
 	return true
 end
