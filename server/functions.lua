@@ -24,7 +24,13 @@ function RandomCodeGenerator()
 end
 
 function verificaritem(item)
-	local result = MySQL.Sync.fetchAll('SELECT name FROM items WHERE name=')
-	
-	return true
+	MySQL.Async.fetchAll('SELECT name FROM items WHERE name = @item ', {
+		['@item'] = item 
+		}, function(result)
+			if result then
+				return true
+			else
+				return false
+			end
+	end)
 end
