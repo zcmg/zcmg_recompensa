@@ -1,6 +1,6 @@
 Config = {}
 
-Config.ESXTrriger = 'esx:getSharedObject' -- Trigger ESX
+Config.ESXTrigger = 'esx:getSharedObject' -- Trigger ESX
 
 Config.Steams = {  --Steam ids de quem pode gerar os codigos
 	{id ="steam:11000010064f1d9"}, -- Steam ID zcmg
