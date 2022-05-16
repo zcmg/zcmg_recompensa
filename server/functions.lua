@@ -24,4 +24,6 @@ function RandomCodeGenerator()
 end
 
 function verificaritem(item)
+	
+	return true
 end
