@@ -7,6 +7,7 @@ description 'V1.5.1'
 client_scripts {
 	'config.lua',
 	'client/client.lua',
+	'client/functions.lua'
 }
 
 server_scripts {
