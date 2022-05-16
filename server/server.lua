@@ -135,17 +135,21 @@ function gerar(source, args, rawCommand)
 			if (args[2] == nil or args[3] == nil) then
 				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos", 5000, 'erro')
 			else
-				RandomCode = RandomCodeGenerator()
-				MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
-					['@code'] = RandomCode,
-					['@type'] = "item", 
-					['@data1'] = args[2],
-					['@data2'] = args[3]
-				})
-				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
-				logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
-				Wait(5)
-				RandomCode = ""
+				if verificaritem(args[2]) then
+					RandomCode = RandomCodeGenerator()
+					MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
+						['@code'] = RandomCode,
+						['@type'] = "item", 
+						['@data1'] = args[2],
+						['@data2'] = args[3]
+					})
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
+					logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
+					Wait(5)
+					RandomCode = ""
+				else
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "O item introduzido não é válido", 5000, 'error')
+				end
 			end	
 		end
 end	
