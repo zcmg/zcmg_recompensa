@@ -6,7 +6,7 @@ Config.Steams = {  --Steam ids de quem pode gerar os codigos
 
 Config.CarsVerification = true -- Activa/Desativa a verificação dos carros
 
---Carros que tem autorização para dar--
+--Carros que tem autorização para dar
 Config.Cars = {  -- Nome de spawn dos carros
 	{code ="deluxo"}, 
 	{code ="panto"}
