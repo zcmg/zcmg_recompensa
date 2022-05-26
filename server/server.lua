@@ -157,7 +157,6 @@ function gerar(source, args, rawCommand)
 		end
 end	
 
-
 RegisterCommand("apagarrecompensa", function(source, args, rawCommand)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local ver = false
