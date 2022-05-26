@@ -24,13 +24,14 @@ function RandomCodeGenerator()
 end
 
 function verificaritem(item)
-	MySQL.Async.fetchAll('SELECT name FROM items WHERE name = @item ', {
+	MySQL.Async.fetchScalar('SELECT COUNT(1) FROM items WHERE name = @item ', {
 		['@item'] = item 
 		}, function(result)
-			if result then
-				return true
+			if result == 0 then
+				return 0
 			else
-				return false
-			end
+				return 1
+			end		
 	end)
+
 end

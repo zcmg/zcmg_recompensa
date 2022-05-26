@@ -135,7 +135,10 @@ function gerar(source, args, rawCommand)
 			if (args[2] == nil or args[3] == nil) then
 				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos", 5000, 'erro')
 			else
-				if verificaritem(args[2]) then
+				-- local veri_item = verificaritem(args[2])
+				-- print(args[2])
+				-- print('oal'..tostring(veri_item))
+				-- if veri_item then
 					RandomCode = RandomCodeGenerator()
 					MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
 						['@code'] = RandomCode,
@@ -147,9 +150,9 @@ function gerar(source, args, rawCommand)
 					logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 					Wait(5)
 					RandomCode = ""
-				else
-					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "O item introduzido não é válido", 5000, 'error')
-				end
+				-- else
+				-- 	TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "O item introduzido não é válido", 5000, 'erro')
+				-- end
 			end	
 		end
 end	
@@ -298,3 +301,5 @@ ESX.RegisterServerCallback('zcmg_recompensa:isPlateTaken', function (source, cb,
 		cb(result[1] ~= nil)
 	end)
 end)
+
+

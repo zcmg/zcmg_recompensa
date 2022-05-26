@@ -16,8 +16,3 @@ server_scripts {
 	'server/server.lua',
 	'server/functions.lua'
 }
-
-dependencies {
-	'mysql-async',
-	'es_extended'
-}
