@@ -25,6 +25,7 @@ function GetRandomLetter(length)
 		return ''
 	end
 end
+
 function GeneratePlate()
 	local generatedPlate
 	local doBreak = false

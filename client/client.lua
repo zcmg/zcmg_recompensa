@@ -36,7 +36,7 @@ RegisterNetEvent('zcmg_recompensa:car')
 AddEventHandler('zcmg_recompensa:car', function(car)
 	local playerPed = PlayerPedId()
 	local playerpos = GetEntityCoords(playerPed)
-	local matricula = GeneratePlate()
+    local matricula = GeneratePlate()
 
     ESX.Game.SpawnVehicle(car, playerpos, 59.24, function(vehicle)
 		local vehicleProps = ESX.Game.GetVehicleProperties(vehicle)

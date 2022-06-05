@@ -100,7 +100,7 @@ function gerar(source, args, rawCommand)
 				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos", 5000, 'erro')
 			else
 				if (args[2] == "weapon_dagger" or args[2] == "weapon_bat" or args[2] == "weapon_bottle" or args[2] == "weapon_crowbar" or args[2] == "weapon_flashlight" or args[2] == "weapon_golfclub"
-				    or args[2] == "weapon_hammer" or args[2] == "weapon_hatchet" or args[2] == "weapon_knuckle" or args[2] == "weapon_knife" or args[2] == "weapon_machete" or args[2] == "weapon_switchblade"
+					or args[2] == "weapon_hammer" or args[2] == "weapon_hatchet" or args[2] == "weapon_knuckle" or args[2] == "weapon_knife" or args[2] == "weapon_machete" or args[2] == "weapon_switchblade"
 					or args[2] == "weapon_nightstick" or args[2] == "weapon_wrench" or args[2] == "weapon_battleaxe" or args[2] == "weapon_poolcue" or args[2] == "weapon_stone_hatchet"
 					or args[2] == "weapon_pistol" or args[2] == "weapon_pistol_mk2" or args[2] == "weapon_combatpistol" or args[2] == "weapon_appistol" or args[2] == "weapon_stungun" or args[2] == "weapon_pistol50"
 					or args[2] == "weapon_snspistol" or args[2] == "weapon_snspistol_mk2" or args[2] == "weapon_heavypistol" or args[2] == "weapon_vintagepistol" or args[2] == "weapon_flaregun" or args[2] == "weapon_marksmanpistol"
@@ -135,10 +135,8 @@ function gerar(source, args, rawCommand)
 			if (args[2] == nil or args[3] == nil) then
 				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Argumentos inválidos", 5000, 'erro')
 			else
-				-- local veri_item = verificaritem(args[2])
-				-- print(args[2])
-				-- print('oal'..tostring(veri_item))
-				-- if veri_item then
+				if verificaritem(tostring(args[2])) then
+					
 					RandomCode = RandomCodeGenerator()
 					MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2) VALUES (@code,@type,@data1,@data2)", {
 						['@code'] = RandomCode,
@@ -150,9 +148,9 @@ function gerar(source, args, rawCommand)
 					logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 					Wait(5)
 					RandomCode = ""
-				-- else
-				-- 	TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "O item introduzido não é válido", 5000, 'erro')
-				-- end
+				else
+					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "O item introduzido não é válido", 5000, 'erro')
+				end
 			end	
 		end
 end	
@@ -213,6 +211,9 @@ end, true)
 RegisterCommand("recompensa", function(source, args, rawCommand)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
+	local xPlayers = ESX.GetPlayers()
+
+
 	if (args[1] == nil) then 
 		TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Têm que preencher o código!", 5000, 'erro')
 	else
@@ -222,53 +223,61 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 			if (json.encode(data) == "[]" or json.encode(data) == "null") then
 				TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código de recompensa não é válido ou já foi utilizado!", 5000, 'erro')
 			else
-				if (args[1] == data[1].code) then
-						if (data[1].type == "black_money") then
-							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
-								['@code'] = args[1],
-							})
-							xPlayer.addAccountMoney('black_money', tonumber(data[1].data1))
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e e recebeu **'..tonumber(data[1].data1)..'€** de dinheiro sujo', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu  "..data[1].data1.."€ de dinheiro sujo.", 5000, 'sucesso')
-		
-						elseif (data[1].type == "bank") then
-							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
-								['@code'] = args[1],
-							})
-							xPlayer.addAccountMoney('bank', tonumber(data[1].data1))
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu  "..data[1].data1.."€ na sua conta bancária.", 5000, 'sucesso')
-						elseif (data[1].type == "cash") then
-							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
-								['@code'] = args[1],
-							})
-							xPlayer.addMoney(data[1].data1)
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu **'..tonumber(data[1].data1)..'€**', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu  "..data[1].data1.."€ de dinheiro.", 5000, 'sucesso')
-						elseif (data[1].type == "item") then
-							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
-								['@code'] = args[1],
-							})
-							xPlayer.addInventoryItem(data[1].data1, data[1].data2)
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu: **'..data[1].data2..'x** de **'..data[1].data1..'**', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu: "..data[1].data2.."x de "..data[1].data1, 5000, 'sucesso')
-						elseif (data[1].type == "weapon") then
-							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
-								['@code'] = args[1],
-							})
-							xPlayer.addWeapon(tostring(data[1].data1), data[1].data2)
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu a arma: **'..data[1].data1..'** com **'..data[1].data2..'** balas.', Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu a arma: "..data[1].data1.." com "..data[1].data2.." balas", 5000, 'sucesso')
-						elseif (data[1].type == "car") then
-							MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
-								['@code'] = args[1],
-							})
-
-							TriggerClientEvent('zcmg_recompensa:car', source, data[1].data1)
-							logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu o carro: **'..data[1].data1..'**' , Config.BotU, Config.BotU_Cor)
-							TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu o carro : "..data[1].data1, 5000, 'sucesso')
-
+				for i=1, #xPlayers, 1 do
+					local xPlayerAdmin = ESX.GetPlayerFromId(xPlayers[i])
+					
+					for k, v in pairs(Config.Steams) do
+						if xPlayer.identifier == v.id then
+							TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..args[1].."</b>", 7000, 'sucesso')
 						end
+					end
+				end
+				if (args[1] == data[1].code) then
+					if (data[1].type == "black_money") then
+						MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
+							['@code'] = args[1],
+						})
+						xPlayer.addAccountMoney('black_money', tonumber(data[1].data1))
+						logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e e recebeu **'..tonumber(data[1].data1)..'€** de dinheiro sujo', Config.BotU, Config.BotU_Cor)
+						TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu  <b>"..data[1].data1.."€</b> de dinheiro sujo.", 5000, 'sucesso')
+					elseif (data[1].type == "bank") then
+						MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
+							['@code'] = args[1],
+						})
+						xPlayer.addAccountMoney('bank', tonumber(data[1].data1))
+						logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **', Config.BotU, Config.BotU_Cor)
+						TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu <b>"..data[1].data1.."€</b> na sua conta bancária.", 5000, 'sucesso')
+					elseif (data[1].type == "cash") then
+						MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
+							['@code'] = args[1],
+						})
+						xPlayer.addMoney(data[1].data1)
+						logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu **'..tonumber(data[1].data1)..'€**', Config.BotU, Config.BotU_Cor)
+						TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu <b>"..data[1].data1.."€</b> de dinheiro.", 5000, 'sucesso')
+					elseif (data[1].type == "item") then
+						MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
+							['@code'] = args[1],
+						})
+						xPlayer.addInventoryItem(data[1].data1, data[1].data2)
+						logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu: **'..data[1].data2..'x** de **'..data[1].data1..'**', Config.BotU, Config.BotU_Cor)
+						TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu <b>"..data[1].data2.."x de "..data[1].data1.."</b>", 5000, 'sucesso')
+					elseif (data[1].type == "weapon") then
+						MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
+							['@code'] = args[1],
+						})
+						xPlayer.addWeapon(tostring(data[1].data1), data[1].data2)
+						logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu a arma: **'..data[1].data1..'** com **'..data[1].data2..'** balas.', Config.BotU, Config.BotU_Cor)
+						TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu a arma <b>"..data[1].data1.." com "..data[1].data2.." balas</b>", 5000, 'sucesso')
+					elseif (data[1].type == "car") then
+						MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
+							['@code'] = args[1],
+						})
+
+						TriggerClientEvent('zcmg_recompensa:car', source, data[1].data1)
+						logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e recebeu o carro: **'..data[1].data1..'**' , Config.BotU, Config.BotU_Cor)
+						TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu o carro <b>"..data[1].data1.."</b>", 5000, 'sucesso')
+
+					end
 				else
 					TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código de recompensa não é válido ou já foi utilizado!", 5000, 'erro')
 				end
@@ -277,12 +286,10 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 	end
 end, false)
 
-
 RegisterServerEvent('zcmg_recompensa:dono')
 AddEventHandler('zcmg_recompensa:dono', function (vehicleProps)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
-
 
 	MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle) VALUES (@owner, @plate, @vehicle)',
 	{
@@ -292,7 +299,6 @@ AddEventHandler('zcmg_recompensa:dono', function (vehicleProps)
 	})
 end)
 
-
 ESX.RegisterServerCallback('zcmg_recompensa:isPlateTaken', function (source, cb, plate)
 	MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE plate = @plate', {
 		['@plate'] = plate
@@ -300,5 +306,3 @@ ESX.RegisterServerCallback('zcmg_recompensa:isPlateTaken', function (source, cb,
 		cb(result[1] ~= nil)
 	end)
 end)
-
-
