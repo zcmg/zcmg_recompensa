@@ -245,7 +245,7 @@ RegisterCommand("recompensa", function(source, args, rawCommand)
 							['@code'] = args[1],
 						})
 						xPlayer.addAccountMoney('bank', tonumber(data[1].data1))
-						logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **', Config.BotU, Config.BotU_Cor)
+						logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..args[1]..'** e adicionou a sua conta bancária **'..tonumber(data[1].data1)..'€**.', Config.BotU, Config.BotU_Cor)
 						TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu <b>"..data[1].data1.."€</b> na sua conta bancária.", 5000, 'sucesso')
 					elseif (data[1].type == "cash") then
 						MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
