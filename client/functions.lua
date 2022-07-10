@@ -52,3 +52,8 @@ function GeneratePlate()
 
 	return generatedPlate
 end
+
+function verificarnumero(sIn)
+    return (sIn:find("%D") == nil)
+end
+

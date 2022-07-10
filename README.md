@@ -4,13 +4,12 @@ Script para poder devolver items/dinheiro/armas/carros etc aos players
 
 Desenvolvido por: **zcmg#5307**
 
-/codigorecompensa - Gerar vários códigos de recompensa
-
-/recompensa - Resgatar um código de recompensa
-
-/apagarrecompensa - Apagar um código gerado
+V2.0
+Tudo feito atrazes de menus.
+/menurecompensa
 
 Dependecias:</br>
 -zcmg_notificacao</br>
 -mysql-async</br>
--es_extended
+-esx_menu_default</br>
+-esx_menu_dialog</br>

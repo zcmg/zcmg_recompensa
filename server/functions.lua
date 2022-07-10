@@ -1,17 +1,6 @@
-
 function logs(msg, canal, cor)
 	local corfinal = tonumber(cor:gsub("#",""),16)
 	PerformHttpRequest(canal, function(err, text, headers) end, 'POST', json.encode({username = 'ESX Developer Scripts', embeds = {{["color"] = corfinal, ["author"] = {["name"] = 'Esx Developer Portugal', ["icon_url"] = 'https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png'}, ["description"] = msg, ["footer"] = {["text"] = "Esx Developer Portugal - "..os.date("%x %X %p"),["icon_url"] = "https://media.discordapp.net/attachments/878328503148355584/918644161018728528/FiveM-Logo2_tools.png",},}}, avatar_url = 'https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png'}), { ['Content-Type'] = 'application/json' })
-end
-
-function verificaritem(item)
-	local result = MySQL.Sync.fetchAll("SELECT name FROM items WHERE name = @item ", {['@item'] = item})
-
-	if result[1] then
-		return true
-	else
-		return false
-	end		
 end
 
 function RandomCodeGenerator()
