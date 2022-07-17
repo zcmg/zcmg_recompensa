@@ -53,7 +53,15 @@ function GeneratePlate()
 	return generatedPlate
 end
 
-function verificarnumero(sIn)
-    return (sIn:find("%D") == nil)
-end
+function verificarnumero(str)
+	local number = tonumber(str)
 
+	if str == "" then
+		return false
+	elseif number == nil then
+		return false
+	else
+		return true
+	end
+	
+end

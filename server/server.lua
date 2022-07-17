@@ -36,10 +36,17 @@ AddEventHandler('zcmg_recompensa:resgatar', function(codigo)
 		else
 			for i=1, #xPlayers, 1 do
 				local xPlayerAdmin = ESX.GetPlayerFromId(xPlayers[i])
-				
-				for k, v in pairs(Config.Steams) do
-					if xPlayer.identifier == v.id then
-						TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
+				if Config.ESX12 then
+					for k, v in pairs(Config.Identifier) do
+						if xPlayer.identifier == v.id then
+							TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
+						end
+					end
+				else
+					for k, v in pairs(Config.Steams) do
+						if xPlayer.identifier == v.id then
+							TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
+						end
 					end
 				end
 			end
@@ -131,7 +138,6 @@ ESX.RegisterServerCallback('zcmg_recompensa:lista_apagar',function(source, cb)
 end)
 
 ESX.RegisterServerCallback('zcmg_recompensa:verificar_item', function(source, cb, item)
-	print('aqui')
 	local result = MySQL.Sync.fetchAll("SELECT name FROM items WHERE name = @item ", {['@item'] = item})
 
 	if result[1] then
@@ -145,13 +151,23 @@ end)
 ESX.RegisterServerCallback('zcmg_recompensa:verificar_admin',function(source, cb)	
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local admin = false
-	
-	for k, v in pairs(Config.Steams) do
-		if xPlayer.identifier == v.id then
-			admin = true
-			break
-		else
-			admin = false
+	if Config.ESX12 then
+		for k, v in pairs(Config.Identifier) do
+			if xPlayer.identifier == v.id then
+				admin = true
+				break
+			else
+				admin = false
+			end
+		end
+	else
+		for k, v in pairs(Config.Steams) do
+			if xPlayer.identifier == v.id then
+				admin = true
+				break
+			else
+				admin = false
+			end
 		end
 	end
 

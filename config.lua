@@ -1,11 +1,21 @@
 Config = {}
 
-Config.ESXTrigger = 'esx:getSharedObject' -- Trigger ESX
+Config.ESXTrigger = 'esx:getSharedObject' --Trigger ESX
 
+Config.ESX12 = false --Para esx 1.2 legacy etc
+
+--Admins preencher conforme a versão do seu ESX
+--Caso Config.ESX12 false - ESX 1.1
 Config.Steams = {  --Steam ids de quem pode gerar os codigos
-	{id ="steam:11000010064f1d9"}, -- Steam ID zcmg
+	{id ="steam:11000010064f1d9"}, -- Steam Hex zcmg
 	{id ="steam:11000010067f1d8"}
 }
+--Caso Config.ESX12 true - ESX 1.2
+Config.Identifier = {  --Steam ids de quem pode gerar os codigos
+	{id ="license:03518966a677e56f26f71e9d05c051106ffa1af6"}, -- Licença zcmg
+	{id ="license:03518966a677e56f26f71e9d05c051106ffa1af5"}
+}
+
 
 Config.CarsVerification = false -- Activa/Desativa a verificação dos carros
 
@@ -113,7 +123,6 @@ Config.Weapons = {  -- Armas que se podem ser devolvidas
 	{code ="GADGET_PARACHUTE"},
 	{code ="WEAPON_FIREEXTINGUISHER"},
 	{code ="WEAPON_HAZARDCAN"}
-
 }
 
 --Bots Discord Logs--
@@ -127,7 +136,7 @@ Config.BotA_Cor = '#FF0000'
 Config.BotU = 'webhook_aqui'
 Config.BotU_Cor = '#0000FF'
 
---Gerar as matriculas [Não mexer]
+--Gerar as matriculas [Não mexer - A menos que a sua garagem seija diferente]
 Config.PlateLetters  = 3
 Config.PlateNumbers  = 3
 Config.PlateUseSpace = true

@@ -78,6 +78,7 @@ RegisterCommand("menurecompensa", function(source, args, rawCommand)
 	end)
 end)
 
+
 function gerar()
     local elements = {}
     table.insert(elements, {label= "💵 Dinheiro na Mão", value = "cash"})
@@ -107,8 +108,7 @@ function gerar()
                         menu.close()
                     else
                         exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
-                    end
-                    
+                    end 
                 end
             end, function(data3, menu)
                 menu.close()
