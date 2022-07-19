@@ -358,7 +358,7 @@ function utilizar()
 
 		if valor ~= nil then
             TriggerServerEvent('zcmg_recompensa:resgatar', valor)
-		    menu.close()
+            menu.close()
 		else
             exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Intruduza um código!", 5000, 'erro')
 		end
@@ -378,8 +378,6 @@ function lista_apagar()
     local car = false
 
     ESX.TriggerServerCallback('zcmg_recompensa:lista_apagar', function(codigo)
-
-      --print(codigo[1].code)
 
         if not next(codigo) then
             exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Não existem codigos para poder apagar!", 5000, 'erro')
@@ -439,7 +437,7 @@ function lista_apagar()
                 if data.current.value == "cash" then
                     for _,v in pairs(codigo) do
                         if v.type == "cash" then
-                            table.insert(elements2, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code, value = codigo[_].code})
+                            table.insert(elements2, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
 
                             ESX.UI.Menu.CloseAll()
                             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
@@ -458,7 +456,7 @@ function lista_apagar()
                 elseif data.current.value == "bank" then
                     for _,v in pairs(codigo) do
                         if v.type == "bank" then
-                            table.insert(elements2, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code, value = codigo[_].code})
+                            table.insert(elements2, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
 
                             ESX.UI.Menu.CloseAll()
                             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
@@ -477,7 +475,7 @@ function lista_apagar()
                 elseif data.current.value == "black_money" then
                     for _,v in pairs(codigo) do
                         if v.type == "black_money" then
-                            table.insert(elements2, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code, value = codigo[_].code})
+                            table.insert(elements2, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
 
                             ESX.UI.Menu.CloseAll()
                             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
@@ -496,7 +494,7 @@ function lista_apagar()
                 elseif data.current.value == "item" then
                     for _,v in pairs(codigo) do
                         if v.type == "item" then
-                            table.insert(elements2, {label = "<font color='green'>"..v.data1.." "..v.data2.."x</font> - "..v.code, value = codigo[_].code})
+                            table.insert(elements2, {label = "<font color='green'>"..v.data1.." "..v.data2.."x</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
 
                             ESX.UI.Menu.CloseAll()
                             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
@@ -515,7 +513,7 @@ function lista_apagar()
                 elseif data.current.value == "weapon" then
                     for _,v in pairs(codigo) do
                         if v.type == "weapon" then
-                            table.insert(elements2, {label = "<font color='green'>"..ESX.GetWeaponLabel(v.data1).." "..v.data2.."x</font> - "..v.code, value = codigo[_].code})
+                            table.insert(elements2, {label = "<font color='green'>"..ESX.GetWeaponLabel(v.data1).." "..v.data2.."x</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
 
                             ESX.UI.Menu.CloseAll()
                             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
@@ -534,7 +532,7 @@ function lista_apagar()
                 elseif data.current.value == "car" then
                     for _,v in pairs(codigo) do
                         if v.type == "car" then
-                            table.insert(elements2, {label = "<font color='green'>"..v.data1.."</font> - "..v.code, value = codigo[_].code})
+                            table.insert(elements2, {label = "<font color='green'>"..v.data1.."</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
 
                             ESX.UI.Menu.CloseAll()
                             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {

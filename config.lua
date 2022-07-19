@@ -2,7 +2,7 @@ Config = {}
 
 Config.ESXTrigger = 'esx:getSharedObject' --Trigger ESX
 
-Config.ESX12 = false --Para esx 1.2 legacy etc
+Config.ESX12 = false --Para esx 1.2 legacy etc colocar true
 
 --Admins preencher conforme a versão do seu ESX
 --Caso Config.ESX12 false - ESX 1.1
@@ -15,7 +15,6 @@ Config.Identifier = {  --Steam ids de quem pode gerar os codigos
 	{id ="license:03518966a677e56f26f71e9d05c051106ffa1af6"}, -- Licença zcmg
 	{id ="license:03518966a677e56f26f71e9d05c051106ffa1af5"}
 }
-
 
 Config.CarsVerification = false -- Activa/Desativa a verificação dos carros
 
