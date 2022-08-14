@@ -274,72 +274,91 @@ function gerar()
         --Veículo
         elseif data.current.value == "car" then
             ESX.UI.Menu.CloseAll()
-            ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
-                title = 'Nome de Spawn do carro'
-            }, function(data3, menu)
-                local bddata1 = data3.value
-                if bddata1 == nil then
-                    exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                else
-                    if Config.CarsVerification then
-                        local ver = false
-                        for k, v in pairs(Config.Cars) do
-                            if bddata1  == v.code then
-                                ver = true
-                                break
+
+            local elements2 = {}
+
+            table.insert(elements2, {label= "Introduzir (<font color='green'>Código de Spawn</font>)", value = "nomespawn"})
+            table.insert(elements2, {label= "--Listagem--", value = "listagem"})
+                
+            for k, v in pairs(Config.Cars) do
+                    table.insert(elements2, {label= v.name , value = v.code})
+            end
+            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'veiculos', {
+                title    = "🚗 Veículos",
+                align    = 'center',
+                elements = elements2
+            }, function(data, menu2)
+                if data.current.value == 'nomespawn' then
+                    menu2.close()
+                    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
+                            title = 'Nome de Spawn do carro'
+                        }, function(data3, menu2)
+                            local bddata1 = data3.value
+                            if bddata1 == nil then
+                                exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
                             else
-                                ver = false
+                                TriggerServerEvent('zcmg_recompensa:gerar', "car", bddata1 ,"")
+                                menu2.close()
                             end
-                        end
-
-                        if ver then
-                            TriggerServerEvent('zcmg_recompensa:gerar', "car", bddata1 ,"")
-                            menu.close()
-                        else
-                            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "O veiculo não se encontra na lista de veiculos autorizados", 5000, 'erro')
-                        end
-                    else
-                        TriggerServerEvent('zcmg_recompensa:gerar', "car", bddata1 ,"")
-                        menu.close()
-                    end
-
+                        end, function(data3, menu2)
+                            menu2.close()
+                        end)
+                elseif data.current.value ~= 'listagem' then
+                    TriggerServerEvent('zcmg_recompensa:gerar', "car", data.current.value ,"")
+                    menu2.close()
                 end
-            end, function(data3, menu)
+            end, function(data, menu)
                 menu.close()
             end)
         --Armas
         elseif data.current.value == "weapon" then
             local elements = {}
 
-            for k, v in pairs(Config.Weapons) do
-                table.insert(elements, {label= ESX.GetWeaponLabel(v.code) or v.code , value = v.code})
-			end
-
+            for k, v in pairs(Config.WeaponsCategory) do
+                    table.insert(elements, {label= v.description, value = v.name})
+            end
+            
             ESX.UI.Menu.CloseAll()
             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'armas', {
-                title    = "🔫 Armas",
+                title    = "🔫 Categoria Armas",
                 align    = 'center',
                 elements = elements
             }, function(data, menu)
-                ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
-                    title = 'Número de balas'
-                }, function(data3, menu)
-                    local bddata1 = data3.value
-                    if bddata1 == nil then
-                        exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                    else
-                        if verificarnumero(bddata1) then
-                            TriggerServerEvent('zcmg_recompensa:gerar', "weapon", data.current.value ,bddata1)
-                            menu.close()
-                        else
-                            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
-                        end
-                        
+                local elements2 = {}
+
+                for k, v in pairs(Config.Weapons) do
+                    if data.current.value == v.category then
+                        table.insert(elements2, {label= ESX.GetWeaponLabel(v.code) or v.code , value = v.code})
                     end
-                end, function(data3, menu)
+                end
+                ESX.UI.Menu.CloseAll()
+                ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'armas', {
+                    title    = "🔫 Armas",
+                    align    = 'center',
+                    elements = elements2
+                }, function(data, menu)
+                    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
+                        title = 'Número de balas'
+                    }, function(data3, menu)
+                        local bddata1 = data3.value
+                        if bddata1 == nil then
+                            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
+                        else
+                            if verificarnumero(bddata1) then
+                                TriggerServerEvent('zcmg_recompensa:gerar', "weapon", data.current.value ,bddata1)
+                                menu.close()
+                            else
+                                exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
+                            end
+                            
+                        end
+                    end, function(data3, menu)
+                        menu.close()
+                    end)
+                    menu.close()
+                end, function(data, menu)
                     menu.close()
                 end)
-                menu.close()
             end, function(data, menu)
                 menu.close()
             end)
