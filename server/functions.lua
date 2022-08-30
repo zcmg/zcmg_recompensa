@@ -21,6 +21,32 @@ function RandomCodeGenerator()
 	charTable[53]..charTable[60].."|"..Random
 end
 
+function admin(source)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local admin = false
+	if Config.ESX12 then
+		for k, v in pairs(Config.Identifier) do
+			if xPlayer.identifier == v.id then
+				admin = true
+				break
+			else
+				admin = false
+			end
+		end
+	else
+		for k, v in pairs(Config.Steams) do
+			if xPlayer.identifier == v.id then
+				admin = true
+				break
+			else
+				admin = false
+			end
+		end
+	end
+
+	return admin
+end
+
 PerformHttpRequest('https://raw.githubusercontent.com/zcmg/'..GetCurrentResourceName()..'/main/fxmanifest.lua', function(code, res, headers)
 	local version = GetResourceMetadata(GetCurrentResourceName(), 'description')
 	local versao = ''

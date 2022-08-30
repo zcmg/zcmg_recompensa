@@ -7,7 +7,7 @@ local RandomCode = ""
 RegisterServerEvent('zcmg_recompensa:gerar')
 AddEventHandler('zcmg_recompensa:gerar', function(tipo, valor1, valor2)
 	
-	if admin() then
+	if admin(source) then
 		RandomCode = RandomCodeGenerator()
 			
 		MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2, owner) VALUES (@code, @type, @data1, @data2, @owner)", {
@@ -52,7 +52,7 @@ AddEventHandler('zcmg_recompensa:resgatar', function(codigo)
 						['@code'] = codigo,
 					})
 					xPlayer.addAccountMoney('bank', tonumber(data[1].data1))
-					logs('**'..GetPlayerName(source)..' ('..source..')** utilizou o seguinte código: **'..codigo..'** e adicionou a sua conta bancária **'..tonumber(data[1].data1)..'€**.', Config.BotU, Config.BotU_Cor)
+					logs('**'..GetPlayerName(_source)..' ('.._source..')** utilizou o seguinte código: **'..codigo..'** e adicionou a sua conta bancária **'..tonumber(data[1].data1)..'€**.', Config.BotU, Config.BotU_Cor)
 					TriggerClientEvent('zcmg_notificacao:Alerta', _source, "RECOMPENSA", "Código resgatado com sucesso!</br>Você recebeu <b>"..data[1].data1.."€</b> na sua conta bancária.", 5000, 'sucesso')
 				elseif (data[1].type == "cash") then
 					MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
@@ -95,13 +95,13 @@ AddEventHandler('zcmg_recompensa:resgatar', function(codigo)
 						if Config.ESX12 then
 							for k, v in pairs(Config.Identifier) do
 								if xPlayerAdmin.identifier == v.id then
-									TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
+									TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA (ADMIN)", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
 								end
 							end
 						else
 							for k, v in pairs(Config.Steams) do
 								if xPlayerAdmin.identifier == v.id then
-									TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
+									TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA (ADMIN)", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
 								end
 							end
 						end
@@ -119,16 +119,12 @@ AddEventHandler('zcmg_recompensa:dono', function (vehicleProps)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
 		
-	if admin() then
-		MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle) VALUES (@owner, @plate, @vehicle)',
-		{
-			['@owner']   = xPlayer.identifier,
-			['@plate']   = vehicleProps.plate,
-			['@vehicle'] = json.encode(vehicleProps)
-		})
-	else
-		DropPlayer(source, 'Boa tentativa 😈')
-	end
+	MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle) VALUES (@owner, @plate, @vehicle)',
+	{
+		['@owner']   = xPlayer.identifier,
+		['@plate']   = vehicleProps.plate,
+		['@vehicle'] = json.encode(vehicleProps)
+	})
 end)
 
 ESX.RegisterServerCallback('zcmg_recompensa:isPlateTaken', function (source, cb, plate)
@@ -165,34 +161,8 @@ ESX.RegisterServerCallback('zcmg_recompensa:verificar_item', function(source, cb
 end)
 
 ESX.RegisterServerCallback('zcmg_recompensa:verificar_admin',function(source, cb)
-	cb(admin())
+	cb(admin(source))
 end)
-
-function admin()
-	local xPlayer = ESX.GetPlayerFromId(source)
-	local admin = false
-	if Config.ESX12 then
-		for k, v in pairs(Config.Identifier) do
-			if xPlayer.identifier == v.id then
-				admin = true
-				break
-			else
-				admin = false
-			end
-		end
-	else
-		for k, v in pairs(Config.Steams) do
-			if xPlayer.identifier == v.id then
-				admin = true
-				break
-			else
-				admin = false
-			end
-		end
-	end
-
-	return admin
-end
 
 RegisterServerEvent('zcmg_recompensa:apagar')
 AddEventHandler('zcmg_recompensa:apagar', function(codigo)
@@ -200,7 +170,7 @@ AddEventHandler('zcmg_recompensa:apagar', function(codigo)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local ver = false
 		
-	if admin() then
+	if admin(_source) then
 		MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
 			['@code'] = codigo
 		}, function(data)
