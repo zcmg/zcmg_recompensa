@@ -379,7 +379,7 @@ function utilizar()
             TriggerServerEvent('zcmg_recompensa:resgatar', valor)
             menu.close()
 		else
-            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Intruduza um código!", 5000, 'erro')
+            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Introduza um código!", 5000, 'erro')
 		end
 
 	end, function(data, menu)
