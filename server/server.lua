@@ -156,8 +156,11 @@ ESX.RegisterServerCallback('zcmg_recompensa:verificar_item', function(source, cb
 	end		
 end)
 
+ESX.RegisterServerCallback('zcmg_recompensa:verificar_admin',function(source, cb)
+		cd(admin())
+end)
 
-ESX.RegisterServerCallback('zcmg_recompensa:verificar_admin',function(source, cb)	
+function admin()
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local admin = false
 	if Config.ESX12 then
@@ -180,7 +183,7 @@ ESX.RegisterServerCallback('zcmg_recompensa:verificar_admin',function(source, cb
 		end
 	end
 
-	cb(admin)
+	return admin
 end)
 
 RegisterServerEvent('zcmg_recompensa:apagar')
