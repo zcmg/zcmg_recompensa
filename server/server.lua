@@ -7,19 +7,23 @@ local RandomCode = ""
 RegisterServerEvent('zcmg_recompensa:gerar')
 AddEventHandler('zcmg_recompensa:gerar', function(tipo, valor1, valor2)
 	
-	RandomCode = RandomCodeGenerator()
-	MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2, owner) VALUES (@code, @type, @data1, @data2, @owner)", {
-		['@code'] = RandomCode,
-		['@type'] = tipo, 
-		['@data1'] = valor1,
-		['@data2'] = valor2,
-		['@owner'] = GetPlayerName(source)
-	})
-	TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
-	logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
-	Wait(5)
-	RandomCode = ""
-
+	if admin() then
+		RandomCode = RandomCodeGenerator()
+			
+		MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2, owner) VALUES (@code, @type, @data1, @data2, @owner)", {
+			['@code'] = RandomCode,
+			['@type'] = tipo, 
+			['@data1'] = valor1,
+			['@data2'] = valor2,
+			['@owner'] = GetPlayerName(source)
+		})
+		TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
+		logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
+		Wait(5)
+		RandomCode = ""
+	else
+		DropPlayer(source, 'Boa tentativa 😈')
+	end
 end)
 
 RegisterServerEvent('zcmg_recompensa:resgatar')
@@ -114,13 +118,17 @@ RegisterServerEvent('zcmg_recompensa:dono')
 AddEventHandler('zcmg_recompensa:dono', function (vehicleProps)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
-
-	MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle) VALUES (@owner, @plate, @vehicle)',
-	{
-		['@owner']   = xPlayer.identifier,
-		['@plate']   = vehicleProps.plate,
-		['@vehicle'] = json.encode(vehicleProps)
-	})
+		
+	if admin() then
+		MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle) VALUES (@owner, @plate, @vehicle)',
+		{
+			['@owner']   = xPlayer.identifier,
+			['@plate']   = vehicleProps.plate,
+			['@vehicle'] = json.encode(vehicleProps)
+		})
+	else
+		DropPlayer(source, 'Boa tentativa 😈')
+	end
 end)
 
 ESX.RegisterServerCallback('zcmg_recompensa:isPlateTaken', function (source, cb, plate)
@@ -191,18 +199,22 @@ AddEventHandler('zcmg_recompensa:apagar', function(codigo)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local ver = false
-	
-	MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
-		['@code'] = codigo
-	}, function(data)
-		if (json.encode(data) == "[]" or json.encode(data) == "null") then
-			TriggerClientEvent('zcmg_notificacao:Alerta', _source, "RECOMPENSA", "Código de recompensa não é válido!", 5000, 'erro')
-		else
-			MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
-				['@code'] = codigo,
-			})
-			logs('**'..GetPlayerName(_source)..' ('.._source..')** apagou o seguinte código: **'..codigo..'**', Config.BotA, Config.BotA_Cor)
-			TriggerClientEvent('zcmg_notificacao:Alerta', _source, "RECOMPENSA", "Código apagado com sucesso!", 5000, 'sucesso')							
-		end
-	end)	
+		
+	if admin() then
+		MySQL.Async.fetchAll('SELECT * FROM `zcmg_recompensa` WHERE `code` = @code', {
+			['@code'] = codigo
+		}, function(data)
+			if (json.encode(data) == "[]" or json.encode(data) == "null") then
+				TriggerClientEvent('zcmg_notificacao:Alerta', _source, "RECOMPENSA", "Código de recompensa não é válido!", 5000, 'erro')
+			else
+				MySQL.Async.execute("DELETE FROM zcmg_recompensa WHERE code = @code;", {
+					['@code'] = codigo,
+				})
+				logs('**'..GetPlayerName(_source)..' ('.._source..')** apagou o seguinte código: **'..codigo..'**', Config.BotA, Config.BotA_Cor)
+				TriggerClientEvent('zcmg_notificacao:Alerta', _source, "RECOMPENSA", "Código apagado com sucesso!", 5000, 'sucesso')							
+			end
+		end)	
+	else
+		DropPlayer(source, 'Boa tentativa 😈')
+	end
 end)
