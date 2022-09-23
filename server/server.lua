@@ -2,7 +2,7 @@ ESX = nil
 
 TriggerEvent(Config.ESXTrigger, function(obj) ESX = obj end)
 
-local RandomCode =  ""
+local RandomCode = ""
 
 RegisterServerEvent('zcmg_recompensa:gerar')
 AddEventHandler('zcmg_recompensa:gerar', function(tipo, valor1, valor2)
