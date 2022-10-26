@@ -9,7 +9,7 @@ Script para poder devolver items/dinheiro/armas/carros etc aos players
 
 Desenvolvido por: **zcmg#5307**
 
-## V2.0
+## V2.6
 Tudo feito atrazes de menus.
 /menurecompensa
 
