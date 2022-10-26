@@ -188,3 +188,23 @@ AddEventHandler('zcmg_recompensa:apagar', function(codigo)
 		DropPlayer(source, 'Boa tentativa 😈')
 	end
 end)
+
+if Config.ESX12 then
+	ESX.RegisterCommand('adminrecompensa', 'admin', function(xPlayer, args, showError)
+		criar_admin(args.playerId.source)
+	end, true, {help = 'Definir admins com acesso ao menu recompensa', validate = true, arguments = {
+		{name = 'playerId', help = 'ID Player', type = 'player'},
+	}})
+else
+	TriggerEvent('es:addGroupCommand', 'adminrecompensa', 'superadmin', function(source, args, user)
+		if args[1] == nil then
+			TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Tem que definir o id do player", 5000, 'erro')	
+		else
+			criar_admin(args[1])
+		end
+	end, function(source, args, user)
+		TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Insufficient Permissions.' } })
+	end, {help = 'Definir admins com acesso ao menu recompensa', params = {{name = "id", help = 'ID do player'}}})
+	
+
+end

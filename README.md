@@ -9,11 +9,16 @@ Script para poder devolver items/dinheiro/armas/carros etc aos players
 
 Desenvolvido por: **zcmg#5307**
 
-V2.0
+## V2.0
 Tudo feito atrazes de menus.
 /menurecompensa
 
-Dependecias:</br>
+Adicionar Admins
+
+/adminrecompensa <id>
+
+
+## Dependências
 -zcmg_notificacao</br>
 -mysql-async</br>
 -esx_menu_default</br>

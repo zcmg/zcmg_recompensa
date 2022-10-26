@@ -51,7 +51,7 @@ RegisterCommand("menurecompensa", function(source, args, rawCommand)
 		align    = 'center',
 		elements = elements
 	}, function(data, menu)
-		if data.current.value == "utilizar" then
+        if data.current.value == "utilizar" then
             utilizar()
         elseif data.current.value == "gerar" then
             ESX.TriggerServerCallback('zcmg_recompensa:verificar_admin', function(admin)
@@ -59,7 +59,7 @@ RegisterCommand("menurecompensa", function(source, args, rawCommand)
                     gerar()
                 else
                     exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Não tens autorização para fazer isto!", 5000, 'erro') 
-                    menu.close()
+                    ESX.UI.Menu.CloseAll()
                 end 
             end)
 		elseif data.current.value == "apagar" then
@@ -68,14 +68,13 @@ RegisterCommand("menurecompensa", function(source, args, rawCommand)
                     lista_apagar()
                 else
                     exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Não tens autorização para fazer isto!", 5000, 'erro') 
-                    menu.close()
+                    ESX.UI.Menu.CloseAll()
                 end 
             end)
 		end
-		menu.close()
-	end, function(data, menu)
-		menu.close()
-	end)
+	    end, function(data, menu)
+            menu.close()
+        end)
 end)
 
 

@@ -6,3 +6,8 @@ CREATE TABLE IF NOT EXISTS `zcmg_recompensa` (
   `data2` text DEFAULT NULL,
   `owner` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `zcmg_recompensa_admins`;
+CREATE TABLE IF NOT EXISTS `zcmg_recompensa_admins` (
+  `identifier` varchar(46) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

