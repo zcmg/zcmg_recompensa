@@ -150,6 +150,10 @@ Config.BotA_Cor = '#FF0000'
 --Utilizar codigo
 Config.BotU = 'webhook_aqui'
 Config.BotU_Cor = '#0000FF'
+-- Kick tentativas de usar cheats
+Config.BotC = 'webhook_aqui'
+Config.BotC_Cor = '#0000FF'
+
 
 --Gerar as matriculas [Não mexer - A menos que a sua garagem seija diferente]
 Config.PlateLetters  = 3

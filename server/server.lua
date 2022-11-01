@@ -6,23 +6,33 @@ local RandomCode = ""
 
 RegisterServerEvent('zcmg_recompensa:gerar')
 AddEventHandler('zcmg_recompensa:gerar', function(tipo, valor1, valor2)
-	
-	if admin(source) then
-		RandomCode = RandomCodeGenerator()
-			
-		MySQL.Async.execute("INSERT INTO zcmg_recompensa (code, type, data1, data2, owner) VALUES (@code, @type, @data1, @data2, @owner)", {
+	local _source = source
+	local xPlayer = ESX.GetPlayerFromId(_source)
+	local admin = admin(_source)
+	local nome
+
+	RandomCode = RandomCodeGenerator()
+	if Config.ESX12 then
+		nome = xPlayer.getName()
+	else
+		nome = GetPlayerName(_source)
+	end
+
+	if admin then
+		MySQL.Async.insert("INSERT INTO zcmg_recompensa (code, type, data1, data2, owner) VALUES (@code, @type, @data1, @data2, @owner)", {
 			['@code'] = RandomCode,
 			['@type'] = tipo, 
 			['@data1'] = valor1,
 			['@data2'] = valor2,
-			['@owner'] = GetPlayerName(source)
+			['@owner'] = nome
 		})
-		TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
-		logs('**'..GetPlayerName(source)..' ('..source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
+		TriggerClientEvent('zcmg_notificacao:Alerta', _source, "RECOMPENSA", "Códigos gerados com sucesso!</br>O código encontra-se no discord", 5000, 'sucesso')
+		logs('**'..nome..' ('.._source..')** gerou o seguinte código: **'..RandomCode..'**', Config.BotG, Config.BotG_Cor)
 		Wait(5)
 		RandomCode = ""
 	else
-		DropPlayer(source, 'Boa tentativa 😈')
+		logs('**'..nome..' ('.._source..')** tentou usar cheats para gerar código', Config.BotC, Config.BotC_Cor)
+		DropPlayer(_source, 'Boa tentativa 😈')
 	end
 end)
 
@@ -185,7 +195,8 @@ AddEventHandler('zcmg_recompensa:apagar', function(codigo)
 			end
 		end)	
 	else
-		DropPlayer(source, 'Boa tentativa 😈')
+		logs('**'..nome..' ('.._source..')** tentou usar cheats para apagar um código', Config.BotC, Config.BotC_Cor)
+		DropPlayer(_source, 'Boa tentativa 😈')
 	end
 end)
 
