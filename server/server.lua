@@ -101,19 +101,8 @@ AddEventHandler('zcmg_recompensa:resgatar', function(codigo)
 				
 				if autorizado then
 					for i=1, #xPlayers, 1 do
-						local xPlayerAdmin = ESX.GetPlayerFromId(xPlayers[i])
-						if Config.ESX12 then
-							for k, v in pairs(Config.Identifier) do
-								if xPlayerAdmin.identifier == v.id then
-									TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA (ADMIN)", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
-								end
-							end
-						else
-							for k, v in pairs(Config.Steams) do
-								if xPlayerAdmin.identifier == v.id then
-									TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA (ADMIN)", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
-								end
-							end
+						if admin(xPlayers[i]) then
+							TriggerClientEvent('zcmg_notificacao:Alerta', xPlayers[i], "RECOMPENSA (ADMIN)", "O Player <b>"..xPlayer.getName().."</b> usou o codigo </br><b>"..codigo.."</b>", 7000, 'sucesso')
 						end
 					end
 				end
