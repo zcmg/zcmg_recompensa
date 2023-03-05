@@ -27,28 +27,26 @@ function admin(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local admin = false
 
-	local result = MySQL.Sync.fetchAll('SELECT * FROM `zcmg_recompensa_admins` WHERE `identifier` = @identifier',
-	{ ['@identifier'] = xPlayer.identifier
-	})
+	local result = MySQL.query.await('SELECT * FROM `zcmg_recompensa_admins` WHERE `identifier` = ?', {xPlayer.identifier})
 
 	if result[1] then
 		admin = true
 	end
 
 	return admin
-
 end
 
 function criar_admin(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	
-	if admin(source) then
-		TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Esté ultilizador já é admin", 5000, 'erro')
-	else
-		MySQL.Async.execute("INSERT INTO zcmg_recompensa_admins (identifier) VALUES (@identifier)", {
-			['@identifier'] = xPlayer.identifier
-		})
 
-		TriggerClientEvent('zcmg_notificacao:Alerta', source, "RECOMPENSA", "Admin adicionado a lista de admins", 5000, 'sucesso')
+	if admin(source) then
+		TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = 'Este utilizador já é admin'})
+	else
+		MySQL.insert.await('INSERT INTO zcmg_recompensa_admins (identifier, name, group_admin) VALUE (?, ?, ?)', {xPlayer.identifier, xPlayer.getName(), tostring(xPlayer.getGroup())})
+		TriggerClientEvent('ox_lib:notify', source, { type = 'success', description = 'Admin adicionado a lista de admins'})
 	end
 end
+
+lib.callback.register('zcmg_recompensa:item_label', function(source, item)
+	return ESX.GetItemLabel(item)
+end)

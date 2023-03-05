@@ -1,30 +1,21 @@
-ESX = nil
-
-Citizen.CreateThread(function()
-    while ESX == nil do
-        TriggerEvent(Config.ESXTrigger, function(obj) ESX = obj end)
-        Citizen.Wait(0)
-    end
-end)
 
 AddEventHandler('onClientResourceStart', function (resourceName)
     if (GetCurrentResourceName() == resourceName) then
 
-		TriggerEvent('chat:addSuggestion', '/menurecompensa', 'Menu de Recompensas', {
-        })
+		TriggerEvent('chat:addSuggestion', '/menurecompensa', 'Menu de Recompensas (Admin)', {})
+        TriggerEvent('chat:addSuggestion', '/recompensa', 'Resgatar Recompensa', {})
     end
 end)
 
 AddEventHandler('onClientResourceStop', function(resourceName)
     if (GetCurrentResourceName() == resourceName) then
-        TriggerEvent('chat:removeSuggestion', '/codigorecompensa')
+        TriggerEvent('chat:removeSuggestion', '/menurecompensa')
         TriggerEvent('chat:removeSuggestion', '/recompensa')
     end
 end)
 
-
 RegisterNetEvent('zcmg_recompensa:car')
-AddEventHandler('zcmg_recompensa:car', function(car)
+AddEventHandler('zcmg_recompensa:car', function(car, codigo)
 	local playerPed = PlayerPedId()
 	local playerpos = GetEntityCoords(playerPed)
     local matricula = GeneratePlate()
@@ -36,567 +27,325 @@ AddEventHandler('zcmg_recompensa:car', function(car)
 
 		TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
 		SetVehicleNumberPlateText(vehicle, matricula)
+        TriggerServerEvent('zcmg_recompensa:regastarcarro', car, matricula, codigo)
 	end)
+end)
+
+RegisterNetEvent('zcmg_recompensa:copiarcodigo')
+AddEventHandler('zcmg_recompensa:copiarcodigo', function(codigo)
+    lib.setClipboard(codigo)
+end)
+
+RegisterCommand("recompensa", function(source, args, rawCommand)
+    local input = lib.inputDialog('Recompensa', {
+        {type = 'input', label = 'Código', default=args[1]}
+    })
+
+    if not input then return end
+
+    if input[1] ~= nil then
+        TriggerServerEvent('zcmg_recompensa:resgatar', input[1])
+    else
+        lib.notify({description = 'Código não é válido', type = 'error'})
+    end
 end)
 
 RegisterCommand("menurecompensa", function(source, args, rawCommand)
-    local elements = {}
-    table.insert(elements, {label= "🔗 Utilizar Código", value = "utilizar"})
-	table.insert(elements, {label= "⚙️ Gerar (<font color='red'>Admin</font>)", value = "gerar"})
-	table.insert(elements, {label= "🗑️ Apagar (<font color='red'>Admin</font>)", value = "apagar"})
-	ESX.UI.Menu.CloseAll()
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'menu', {
-		title    = "🎁 Menu de Recompensa",
-		align    = 'center',
-		elements = elements
-	}, function(data, menu)
-        if data.current.value == "utilizar" then
-            utilizar()
-        elseif data.current.value == "gerar" then
-            ESX.TriggerServerCallback('zcmg_recompensa:verificar_admin', function(admin)
-                if admin then
+    ESX.TriggerServerCallback('zcmg_recompensa:verificar_admin', function(admin)
+        if admin then
+            local options = {}
+            table.insert(options,{label = "Gerar", args='gerar', icon = 'fa-star'})
+            table.insert(options,{label = "Apagar", args='apagar', icon = 'fa-trash-can'})
+            table.insert(options,{label = "Admins", args='admins', icon = 'fa-user'})
+
+            lib.registerMenu({
+                id = 'menu_recompensa',
+                title = 'Menu de Recompensa',
+                options = options
+            }, function(selected, scrollIndex, args)
+                if args == "gerar" then
                     gerar()
-                else
-                    exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Não tens autorização para fazer isto!", 5000, 'erro') 
-                    ESX.UI.Menu.CloseAll()
-                end 
-            end)
-		elseif data.current.value == "apagar" then
-            ESX.TriggerServerCallback('zcmg_recompensa:verificar_admin', function(admin)
-                if admin then
+                elseif args == "apagar" then
                     lista_apagar()
-                else
-                    exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Não tens autorização para fazer isto!", 5000, 'erro') 
-                    ESX.UI.Menu.CloseAll()
-                end 
+                elseif args == "admins" then
+                    lista_admins()
+                end
             end)
-		end
-	    end, function(data, menu)
-            menu.close()
-        end)
+
+            lib.showMenu('menu_recompensa')
+        else
+            lib.notify({description = 'Não tens autorização para fazer isto!', type = 'error'})
+        end
+    end)
 end)
 
-
 function gerar()
-    local elements = {}
-    table.insert(elements, {label= "💵 Dinheiro na Mão", value = "cash"})
-	table.insert(elements, {label= "💳 Dinheiro conta bancária", value = "bank"})
-    table.insert(elements, {label= "💰 Dinheiro sujo", value = "black_money"})
-    table.insert(elements, {label= "📦 Item", value = "item"})
-	table.insert(elements, {label= "🔫 Arma", value = "weapon"})
-    table.insert(elements, {label= "🚗 Veículo", value = "car"})
-	ESX.UI.Menu.CloseAll()
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'gerar', {
-		title    = "🎁 Tipo de Recompensa",
-		align    = 'center',
-		elements = elements
-	}, function(data, menu)
-        --Dinheiro na Mão
-		if data.current.value == "cash" then
-            ESX.UI.Menu.CloseAll()
-            ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
-                title = 'Montante de dinheiro'
-            }, function(data, menu)
-                local bddata1 = data.value
-                if bddata1 == nil then
-                    exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                else
-                    if verificarnumero(bddata1) then
-                        TriggerServerEvent('zcmg_recompensa:gerar', "cash", bddata1 ,"")
-                        ESX.UI.Menu.CloseAll()
-                    else
-                        exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
-                    end 
-                end
-            end, function(data, menu)
-                menu.close()
-            end)
-        --Dinheiro conta bancária
-        elseif data.current.value == "bank" then
-            menu.close()
-            ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
-                title = 'Montante de dinheiro'
-            }, function(data4, menu)
-                local bddata4 = data4.value
-                if bddata4 == nil then
-                    exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                else
-                    if verificarnumero(bddata4) then
-                        TriggerServerEvent('zcmg_recompensa:gerar', "bank", bddata4 ,"")
-                        menu.close()
-                    else
-                        exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
-                    end
-                    
-                end
-            end, function(data4, menu)
-                menu.close()
-            end)
-        -- Dinheiro Sujo
-        elseif data.current.value == "black_money" then
-            menu.close()
-            ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
-                title = 'Montante de dinheiro sujo'
-            }, function(data4, menu)
-                local bddata1 = data4.value
-                if bddata1 == nil then
-                    exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                else
-                    if verificarnumero(bddata1) then
-                        TriggerServerEvent('zcmg_recompensa:gerar', "black_money", bddata1 ,"")
-                        menu.close()
-                    else
-                        exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
-                    end
-                    
-                end
-            end, function(data4, menu)
-                menu.close()
-            end)
-        --Item
-        elseif data.current.value == "item" then
-            local elements = {}
+    local options = {}
+    table.insert(options,{label = "Dinheiro na Mão", args='cash', icon = 'fa-wallet'})
+    table.insert(options,{label = "Dinheiro Conta Bancária", args='bank', icon = 'fa-credit-card'})
+    table.insert(options,{label = "Dinheiro sujo", args='black_money', icon = 'fa-sack-dollar'})
+    table.insert(options,{label = "Item", args='item', icon = 'fa-box-open'})
+    table.insert(options,{label = "Arma", args='weapon', icon = 'fa-gun'})
+    table.insert(options,{label = "Veículo", args='car', icon = 'fa-car'})
 
-            table.insert(elements, {label= "Introduzir (<font color='green'>Código de Spawn</font>)", value = "name"})
-            table.insert(elements, {label= "A", value = "a"})
-            table.insert(elements, {label= "B", value = "b"})
-            table.insert(elements, {label= "C", value = "c"})
-            table.insert(elements, {label= "D", value = "d"})
-            table.insert(elements, {label= "E", value = "e"})
-            table.insert(elements, {label= "F", value = "f"})
-            table.insert(elements, {label= "G", value = "g"})
-            table.insert(elements, {label= "H", value = "h"})
-            table.insert(elements, {label= "I", value = "i"})
-            table.insert(elements, {label= "J", value = "j"})
-            table.insert(elements, {label= "K", value = "k"})
-            table.insert(elements, {label= "L", value = "l"})
-            table.insert(elements, {label= "M", value = "m"})
-            table.insert(elements, {label= "N", value = "n"})
-            table.insert(elements, {label= "O", value = "o"})
-            table.insert(elements, {label= "P", value = "p"})
-            table.insert(elements, {label= "Q", value = "q"})
-            table.insert(elements, {label= "R", value = "r"})
-            table.insert(elements, {label= "S", value = "s"})
-            table.insert(elements, {label= "T", value = "t"})
-            table.insert(elements, {label= "U", value = "u"})
-            table.insert(elements, {label= "V", value = "v"})
-            table.insert(elements, {label= "W", value = "w"})
-            table.insert(elements, {label= "X", value = "x"})
-            table.insert(elements, {label= "Y", value = "y"})
-            table.insert(elements, {label= "Z", value = "z"})
-            
-            ESX.UI.Menu.CloseAll()
-            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'armas', {
-                title    = "📦 Items",
-                align    = 'center',
-                elements = elements
-            }, function(data, menu)
-                if data.current.value == "name" then
-                    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
-                        title = 'Nome de Spawn'
-                    }, function(data3, menu)
-                        local bddata1 = data3.value
-                        if bddata1 == nil then
-                            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                        else
-                            ESX.TriggerServerCallback('zcmg_recompensa:verificar_item', function(cb)
-                                if cb then
-                                    menu.close()
-                                    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata2', {
-                                        title = 'Quantidade'
-                                    }, function(data2, menu2)
-                                        local bddata2 = data2.value
-                                        if bddata2 == nil then
-                                            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                                        else
-                                            if verificarnumero(bddata2) then
-                                                TriggerServerEvent('zcmg_recompensa:gerar', "item", bddata1 ,bddata2)
-                                                menu2.close()
-                                            else
-                                                exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
-                                            end
-                                        end
-                                    end, function(data3, menu2)
-                                        menu2.close()
-                                    end)
-                                else
-                                    exports['zcmg_notificacao']:Alerta("RECOMPENSA", "O item introduzido não é válido", 5000, 'erro')
-                                end
-                            end, bddata1)
-                        end
-                    end, function(data3, menu)
-                        menu.close()
-                    end)
-                    menu.close()
-                else
-                    ESX.TriggerServerCallback('zcmg_recompensa:lista_items', function(cb)
-                        local items = {}
-                
-                        for _,v in pairs(cb) do
-                            table.insert(items, {label = v.label.." (<font color='green'>"..v.name.."</font>)" , value = v.name})
-                        end
-        
-                        ESX.UI.Menu.CloseAll()
-                        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'items', {
-                            title    = "📦 Items",
-                            align    = 'center',
-                            elements = items
-                        }, function(data, menu)
-                            ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata10', {
-                                title = 'Numero de items'
-                            }, function(data10, menu)
-                                local bddata10 = data10.value
-                                if bddata10 == nil then
-                                    exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                                else
-                                    if verificarnumero(bddata10) then
-                                        TriggerServerEvent('zcmg_recompensa:gerar', "item", data.current.value , bddata10)
-                                        menu.close()
-                                    else
-                                        exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
-                                    end
-                                    
-                                end
-                            end, function(data10, menu)
-                                menu.close()
-                            end)
-                            menu.close()
-                        end, function(data, menu)
-                            menu.close()
-                        end)
-                    end, data.current.value)
-                end
-            end, function(data, menu)
-                menu.close()
-            end)
-        --Veículo
-        elseif data.current.value == "car" then
-            ESX.UI.Menu.CloseAll()
+    lib.registerMenu({
+        id = 'menu_gerar',
+        title = 'Tipo de Recompensa',
+        options = options,
+        onClose = function(key)
+            lib.showMenu('menu_recompensa')
+        end,
+    }, function(selected, scrollIndex, args)
+        gerar_tipo(args)
+    end)
 
-            local elements = {}
-
-            table.insert(elements, {label= "Introduzir (<font color='green'>Código de Spawn</font>)", value = "nomespawn"})
-            table.insert(elements, {label= "--Listagem--", value = "listagem"})
-                
-            for k, v in pairs(Config.Cars) do
-                    table.insert(elements, {label= v.name , value = v.code})
-            end
-            ESX.UI.Menu.CloseAll()
-            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'veiculos', {
-                title    = "🚗 Veículos",
-                align    = 'center',
-                elements = elements
-            }, function(data, menu)
-                if data.current.value == 'nomespawn' then
-                    menu.close()
-                    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
-                            title = 'Nome de Spawn do carro'
-                        }, function(data, menu)
-                            local bddata1 = data.value
-                            if bddata1 == nil then
-                                exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                            else
-                                TriggerServerEvent('zcmg_recompensa:gerar', "car", bddata1 ,"")
-                                menu.close()
-                            end
-                        end, function(data, menu)
-                            menu.close()
-                        end)
-                elseif data.current.value ~= 'listagem' then
-                    TriggerServerEvent('zcmg_recompensa:gerar', "car", data.current.value ,"")
-                    menu.close()
-                end
-            end, function(data, menu)
-                menu.close()
-            end)
-        --Armas
-        elseif data.current.value == "weapon" then
-            local elements = {}
-
-            for k, v in pairs(Config.WeaponsCategory) do
-                    table.insert(elements, {label= v.description, value = v.name})
-            end
-            
-            ESX.UI.Menu.CloseAll()
-            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'armas', {
-                title    = "🔫 Categoria Armas",
-                align    = 'center',
-                elements = elements
-            }, function(data, menu)
-                local elements2 = {}
-
-                for k, v in pairs(Config.Weapons) do
-                    if data.current.value == v.category then
-                        table.insert(elements2, {label= ESX.GetWeaponLabel(v.code) or v.code , value = v.code})
-                    end
-                end
-                ESX.UI.Menu.CloseAll()
-                ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'armas', {
-                    title    = "🔫 Armas",
-                    align    = 'center',
-                    elements = elements2
-                }, function(data, menu)
-                    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bddata1', {
-                        title = 'Número de balas'
-                    }, function(data3, menu)
-                        local bddata1 = data3.value
-                        if bddata1 == nil then
-                            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Tem que preeencher o campo!", 5000, 'erro')
-                        else
-                            if verificarnumero(bddata1) then
-                                TriggerServerEvent('zcmg_recompensa:gerar', "weapon", data.current.value ,bddata1)
-                                menu.close()
-                            else
-                                exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Montante não é valido", 5000, 'erro')
-                            end
-                            
-                        end
-                    end, function(data3, menu)
-                        menu.close()
-                    end)
-                    menu.close()
-                end, function(data, menu)
-                    menu.close()
-                end)
-            end, function(data, menu)
-                menu.close()
-            end)
-        end
-		menu.close()
-	end, function(data, menu)
-		menu.close()
-	end)
+    lib.showMenu('menu_gerar')
 end
 
-function utilizar()
-    ESX.UI.Menu.CloseAll()
-    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'codigo', {
-		title = 'Código'
-	}, function(data, menu)
-		local valor = data.value
+function gerar_tipo(args)
+    --Dinheiro na Mão
+    if args == "cash" then
+        input_number("cash", "", "Dinheiro na Mão", "Valor", false)
+    --Dinheiro Conta Bancária
+    elseif args == "bank" then
+        input_number("bank", "", "Dinheiro Conta Bancária", "Valor", false)
+    -- Dinheiro Sujo
+    elseif args == "black_money" then
+        input_number("black_money", "", "Dinheiro sujo", "Valor", false)
+    --Item
+    elseif args == "item" then
+        local options = {}
+        local abc = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}
+        table.insert(options,{label = "Introduzir (Código de Spawn)", args='name', icon = 'fa-code'})
 
-		if valor ~= nil then
-            TriggerServerEvent('zcmg_recompensa:resgatar', valor)
-            menu.close()
-		else
-            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Introduza um código!", 5000, 'erro')
-		end
+        for k, v in pairs(abc) do
+            table.insert(options,{label = "Todos Iniciado por "..string.upper(v), args=v, icon = 'fa-'..v})
+        end
 
-	end, function(data, menu)
-		menu.close()
-	end)
-	
+        lib.registerMenu({
+            id = 'menu_item',
+            title = 'Item',
+            options = options,
+            onClose = function(key)
+                lib.showMenu('menu_gerar')
+            end,
+        }, function(selected, scrollIndex, args)
+            if args == 'name' then
+                local input = lib.inputDialog('Item', {"Código de  Spawn"})
+
+                if not input then return end
+        
+                if input[1] ~= nil then
+                    ESX.TriggerServerCallback('zcmg_recompensa:verificar_item', function(cb)
+                        if cb then
+                            input_number("item", input[1], "Item", "Quantidade", true)
+                        else
+                            lib.notify({description = 'O item introduzido não é válido', type = 'error'})
+                        end
+                    end, input[1])
+                    
+                else
+                    lib.notify({description = 'Montante não é válido', type = 'error'})
+                end
+            else
+                ESX.TriggerServerCallback('zcmg_recompensa:lista_items', function(cb)
+                    local items = {}
+            
+                    for _,v in pairs(cb) do
+                        table.insert(items, {label = v.label.." ("..v.name..")" , args = v.name, icon = 'fa-'..args})
+                    end
+
+                    lib.registerMenu({
+                        id = 'menu_item_abc',
+                        title = 'Items ABC',
+                        options = items,
+                        onClose = function(key)
+                            lib.showMenu('menu_item')
+                        end,
+                    }, function(selected, scrollIndex, args)
+                        input_number("item", args, "Item", "Quantidade", true)
+                    end)
+
+                    lib.showMenu('menu_item_abc')
+                end, args)
+            end
+        end)
+        lib.showMenu('menu_item')
+    --Armas
+    elseif args == "weapon" then
+        local options = {}
+
+        for k, v in pairs(Config.WeaponsCategory) do
+            table.insert(options,{label = v.description, args=v.name, icon = v.icon})
+        end
+
+        lib.registerMenu({
+            id = 'menu_weapon_cat',
+            title = 'Categorias Armas',
+            options = options,
+            onClose = function(key)
+                lib.showMenu('menu_gerar')
+            end,
+        }, function(selected, scrollIndex, args)
+            local weapons = {}
+            for k, v in pairs(Config.Weapons) do
+                if args == v.category then
+                    table.insert(weapons, {label= ESX.GetWeaponLabel(v.code) or v.code , args = v.code})
+                end
+            end
+
+            lib.registerMenu({
+                id = 'menu_weapon',
+                title = 'Tipo de Recompensa',
+                options = weapons,
+                onClose = function(key)
+                    lib.showMenu('menu_weapon_cat')
+                end,
+            }, function(selected, scrollIndex, args)
+                for k, v in pairs(Config.Weapons) do
+                    if args == v.category then
+                        table.insert(weapons, {label= ESX.GetWeaponLabel(v.code) or v.code , args = v.code})
+                    end
+                end
+                input_number("weapon", args, "Número de Balas", "Quantidade", true)
+            end)
+            lib.showMenu('menu_weapon')
+        end)
+
+        lib.showMenu('menu_weapon_cat')
+    --Veículo
+    elseif args == "car" then
+        local options = {}
+        table.insert(options,{label = "Introduzir (Código de Spawn)", args='name', icon = 'fa-code'})
+
+        for k, v in pairs(Config.Cars) do
+            table.insert(options, {label= v.name , args = v.code, icon = v.icon})
+        end
+    
+        lib.registerMenu({
+            id = 'menu_car',
+            title = 'Veículos',
+            options = options,
+            onClose = function(key)
+                lib.showMenu('menu_gerar')
+            end,
+        }, function(selected, scrollIndex, args)
+            if args == "name" then
+                local input = lib.inputDialog('Nome do Veículo', {'Código de Spawn'})
+
+                if not input then return end
+
+                if input[1] ~= nil then
+                    TriggerServerEvent('zcmg_recompensa:gerar', "car", input[1] ,"")
+                else
+                    lib.notify({description = 'Código não é válido', type = 'error'})
+                end
+            else
+                TriggerServerEvent('zcmg_recompensa:gerar', "car", args ,"")
+            end
+        end)
+        lib.showMenu('menu_car')
+    end
 end
 
 function lista_apagar()
-    local cash = false
-    local bank = false
-    local black_money = false
-    local item = false
-    local weapon = false
-    local car = false
-
     ESX.TriggerServerCallback('zcmg_recompensa:lista_apagar', function(codigo)
-
         if not next(codigo) then
-            exports['zcmg_notificacao']:Alerta("RECOMPENSA", "Não existem codigos para poder apagar!", 5000, 'erro')
+            lib.notify({description = 'Não existem codigos para poder apagar!', type = 'error'})
         else
-            local elements = {}
-            
+            local tipo = {}
+            local options = {}
+
             for _,v in pairs(codigo) do
-                if v.type == "cash" then
-                    cash=true
-                end
-                if v.type == "bank" then
-                    bank=true
-                end
-                if v.type == "black_money" then
-                    black_money=true
-                end
-                if v.type == "item" then
-                    item=true
-                end
-                if v.type == "weapon" then
-                    weapon=true
-                end
-                if v.type == "car" then
-                    car=true
-                end
+                if v.type == "cash" and not tipo['cash'] then tipo['cash'] = true table.insert(options,{label = "Dinheiro na Mão", args='cash', icon = 'fa-wallet'}) end
+                if v.type == "bank" and not tipo['bank'] then tipo['bank'] = true table.insert(options,{label = "Dinheiro Conta Bancária", args='bank', icon = 'fa-credit-card'}) end
+                if v.type == "black_money" and not tipo['black_money'] then tipo['black_money'] = true table.insert(options,{label = "Dinheiro sujo", args='black_money', icon = 'fa-sack-dollar'}) end
+                if v.type == "item" and not tipo['item'] then tipo['item'] = true table.insert(options,{label = "Item", args='item', icon = 'fa-box-open'}) end
+                if v.type == "weapon" and not tipo['weapon'] then tipo['weapon'] = true table.insert(options,{label = "Arma", args='weapon', icon = 'fa-gun'}) end
+                if v.type == "car" and not tipo['car'] then tipo['car'] = true table.insert(options,{label = "Veículo", args='car', icon = 'fa-car'}) end
             end
 
-            if cash then
-                table.insert(elements, {label= "💵 Dinheiro na Mão", value = "cash"})
-            end
-            if bank then
-                table.insert(elements, {label= "💳 Dinheiro conta bancária", value = "bank"})
-            end
-            if black_money then
-                table.insert(elements, {label= "💰 Dinheiro sujo", value = "black_money"})
-            end
-                    if item then
-                table.insert(elements, {label= "📦 Item", value = "item"})
-            end
-            if weapon then
-                table.insert(elements, {label= "🔫 Arma", value = "weapon"})
-            end
-            if car then
-                table.insert(elements, {label= "🚗 Veículo", value = "car"})
-            end
-
-            ESX.UI.Menu.CloseAll()
-            ESX.UI.Menu.Open(
-            'default', GetCurrentResourceName(), 'apagarcodigo',
-            {
-                title    = 'Apagar Codigo',
-                align    = 'center',
-                elements = elements,
-            },
-            function(data, menu)
-                --Dinheiro Mão
-                if data.current.value == "cash" then
-                    local elements = {}
-                    for _,v in pairs(codigo) do
-                        if v.type == "cash" then
-                            table.insert(elements, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
-                            ESX.UI.Menu.CloseAll()
-                            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
-                                title    = "💵 Dinheiro na Mão",
-                                align    = 'center',
-                                elements = elements
-                            }, function(data, menu)
-                                ESX.UI.Menu.CloseAll()
-                                apagarcodigo(data.current.value)
-                            end, function(data, menu)
-                                menu.close()
-                            end)
-                        end
-                    end
-                --Dinheiro conta bancária
-                elseif data.current.value == "bank" then
-                    for _,v in pairs(codigo) do
-                        if v.type == "bank" then
-                            table.insert(elements2, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
-
-                            ESX.UI.Menu.CloseAll()
-                            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
-                                title    = "💳 Dinheiro conta bancária",
-                                align    = 'center',
-                                elements = elements2
-                            }, function(data2, menu2)
-                                apagarcodigo(data2.current.value)
-                                menu2.close()
-                            end, function(data2, menu2)
-                                menu2.close()
-                            end)
-                        end
-                    end
-                --Dinheiro sujo
-                elseif data.current.value == "black_money" then
-                    for _,v in pairs(codigo) do
-                        if v.type == "black_money" then
-                            table.insert(elements2, {label = "<font color='green'>Montante: "..v.data1.."€</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
-
-                            ESX.UI.Menu.CloseAll()
-                            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
-                                title    = "💰 Dinheiro sujo",
-                                align    = 'center',
-                                elements = elements2
-                            }, function(data2, menu2)
-                                apagarcodigo(data2.current.value)
-                                menu2.close()
-                            end, function(data2, menu2)
-                                menu2.close()
-                            end)
-                        end
-                    end
-                --Item
-                elseif data.current.value == "item" then
-                    for _,v in pairs(codigo) do
-                        if v.type == "item" then
-                            table.insert(elements2, {label = "<font color='green'>"..v.data1.." "..v.data2.."x</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
-
-                            ESX.UI.Menu.CloseAll()
-                            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
-                                title    = "📦 Item",
-                                align    = 'center',
-                                elements = elements2
-                            }, function(data2, menu2)
-                                apagarcodigo(data2.current.value)
-                                menu2.close()
-                            end, function(data2, menu2)
-                                menu2.close()
-                            end)
-                        end
-                    end
-                --Armas
-                elseif data.current.value == "weapon" then
-                    for _,v in pairs(codigo) do
-                        if v.type == "weapon" then
-                            table.insert(elements2, {label = "<font color='green'>"..ESX.GetWeaponLabel(v.data1).." "..v.data2.."x</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
-
-                            ESX.UI.Menu.CloseAll()
-                            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
-                                title    = "🔫 Arma",
-                                align    = 'center',
-                                elements = elements2
-                            }, function(data2, menu2)
-                                apagarcodigo(data2.current.value)
-                                menu2.close()
-                            end, function(data2, menu2)
-                                menu2.close()
-                            end)
-                        end
-                    end
-                --Veiculos
-                elseif data.current.value == "car" then
-                    for _,v in pairs(codigo) do
-                        if v.type == "car" then
-                            table.insert(elements2, {label = "<font color='green'>"..v.data1.."</font> - "..v.code.." - Gerado por: <font color='red'>"..v.owner.."</font>", value = codigo[_].code})
-
-                            ESX.UI.Menu.CloseAll()
-                            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'apagar', {
-                                title    = "📦 Item",
-                                align    = 'center',
-                                elements = elements2
-                            }, function(data2, menu2)
-                                apagarcodigo(data2.current.value)
-                                menu2.close()
-                            end, function(data2, menu2)
-                                menu2.close()
-                            end)
-                        end
-                    end
-                end
-
-            end, function(data, menu)
-                menu.close()
+            lib.registerMenu({
+                id = 'menu_apagar',
+                title = 'Apagar',
+                options = options,
+                onClose = function(key)
+                    lib.showMenu('menu_recompensa')
+                end,
+            }, function(selected, scrollIndex, args)
+                apagar(args)
             end)
+            lib.showMenu('menu_apagar')
         end
     end)
 end
 
+function apagar(tipo)
+    ESX.TriggerServerCallback('zcmg_recompensa:lista_apagar', function(codigo)
+        local options = {}
+
+        for _,v in pairs(codigo) do
+            if v.type == tipo then
+                if tipo == 'cash' then
+                    table.insert(options,{label = v.code, values = {'Por: '..v.owner, 'Valor: '..v.data1}, args=v.code, icon = 'fa-wallet'})
+                elseif tipo == 'bank' then
+                    table.insert(options,{label = v.code, values = {'Por: '..v.owner, 'Valor: '..v.data1}, args=v.code, icon = 'fa-credit-card'})
+                elseif tipo == 'black_money' then
+                    table.insert(options,{label = v.code, values = {'Por: '..v.owner, 'Valor: '..v.data1}, args=v.code, icon = 'fa-sack-dollar'})
+                elseif tipo == 'item' then
+                    local label = lib.callback.await('zcmg_recompensa:item_label', false, v.data1)
+                    table.insert(options,{label = v.code, values = {'Por: '..v.owner, 'Item: '..label, 'Quantidade: '..v.data2}, args=v.code, icon = 'fa-box-open'})
+                elseif tipo == 'weapon' then
+                    table.insert(options,{label = v.code, values = {'Por: '..v.owner, 'Arma: '..ESX.GetWeaponLabel(v.data1) or v.data1}, args=v.code, icon = 'fa-gun'})
+                elseif tipo == 'car' then
+                    table.insert(options,{label = v.code, values = {'Por: '..v.owner, 'Veículo '..v.data1}, args=v.code, icon = 'fa-car'})
+                end
+            end
+        end
+
+        lib.registerMenu({
+            id = 'sub_menu_apagar',
+            title = 'Apagar',
+            options = options,
+            onClose = function(key)
+                lib.showMenu('menu_apagar')
+            end,
+        }, function(selected, scrollIndex, args)
+            apagarcodigo(args)
+        end)
+        lib.showMenu('sub_menu_apagar')
+    end)
+end
+
 function apagarcodigo(codigo)
-    local elements = {
-        {label= "<font color='green'>Sim</font>", value = "sim"},
-        {label= "<font color='red'>Não</font>", value = "nao"}
-    }
-    
-    ESX.UI.Menu.CloseAll()
-    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'confirmarapagar', {
-        title    = "Tem a certeza que quer apagar este código?",
-        align    = 'center',
-        elements = elements
-    }, function(data, menu)
-        if data.current.value == "sim" then
-            menu.close()
-            TriggerServerEvent('zcmg_recompensa:apagar', codigo)
-            lista_apagar()
+    local alert = lib.alertDialog({
+        header = 'Recompensa',
+        content = 'Tem a certeza que pretende eliminar este código:    \n '..codigo,
+        centered = true,
+        cancel = true
+    })
+
+    if alert == 'confirm' then TriggerServerEvent('zcmg_recompensa:apagar', codigo) end
+end
+
+function lista_admins()
+    ESX.TriggerServerCallback('zcmg_recompensa:lista_admins', function(cb)
+        local admins = {}
+
+        for _,v in pairs(cb) do
+            table.insert(admins, {label = v.name, values = {'Grupo: '..v.group_admin, 'Identifier: '..v.identifier}, icon = 'fa-user'})
+            local info_admin = ''
         end
-        if data.current.value == "nao" then
-            lista_apagar()
-            menu.close()
-        end
-    end, function(data, menu)
-        menu.close()
+
+        lib.registerMenu({
+            id = 'menu_admins',
+            title = 'Admins',
+            options = admins,
+            onClose = function(key)
+                lib.showMenu('menu_recompensa')
+            end,
+        })
+
+        lib.showMenu('menu_admins')
     end)
 end

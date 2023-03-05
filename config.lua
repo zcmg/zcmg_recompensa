@@ -1,30 +1,40 @@
 Config = {}
 
-Config.ESXTrigger = 'esx:getSharedObject' --Trigger ESX
+--Logs Discord
+Config.Logs = {
+	Gerar = {Webhook = 'webhook_aqui', Cor = '00FF00'},
+	Apagar = {Webhook = 'webhook_aqui', Cor = '00FF00'},
+	Utilizar = {Webhook = 'webhook_aqui', Cor = '00FF00'},
+	Cheater = {Webhook = 'webhook_aqui', Cor = '00FF00'},
+}
 
-Config.ESX12 = false --Para esx 1.2 legacy etc colocar true
+--Gerar as matriculas [Não mexer - A menos que a sua garagem seja diferente]
+Config.PlateLetters  = 3
+Config.PlateNumbers  = 3
+Config.PlateUseSpace = true
 
 --Carros que aparecem na listagem
 Config.Cars = {
-	{name = "Deluxo", code ="deluxo"}, 
-	{name = "Panto", code ="panto"}
+	{name = "Zentorno", code ="zentorno", icon ='fa-car'}, 
+	{name = "Panto", code ="panto", icon ='fa-car-side'},
+	{name = "Sanchez", code ="sanchez", icon ='fa-person-biking'}
 }
 
+--Categoria Armas
 Config.WeaponsCategory = { 
-	{name="armasbrancas", description="🔪 Armas Brancas"},
-	{name="pistolas", description="🔫 Pistolas"},
-	{name="smg", description="🔫 Sub Metralhadoras (SMG)"},
-	{name="shotguns", description="🔫 ShotGuns"},
-	{name="rifles", description="🔫 Rifles"},
-	{name="mg", description="🔫 Metralhadoras Pesadas"},
-	{name="snipers", description="🔫 Snipers"},
-	{name="armasexplosivas", description="💥 Armas Explosivas"},
-	{name="granadas", description="💣 Granadas"},
-	{name="outros", description="📦 Outros"}
+	{name="armasbrancas", description="Armas Brancas", icon ="fa-wrench"},
+	{name="pistolas", description="Pistolas", icon="fa-gun"},
+	{name="smg", description="Sub Metralhadoras (SMG)", icon="fa-gun"},
+	{name="shotguns", description="ShotGuns", icon="fa-gun"},
+	{name="rifles", description="Rifles", icon="fa-gun"},
+	{name="mg", description="Metralhadoras Pesadas", icon="fa-gun"},
+	{name="snipers", description="Snipers", icon="fa-gun"},
+	{name="armasexplosivas", description="Armas Explosivas", icon="fa-explosion"},
+	{name="granadas", description="Granadas", icon="fa-bomb"},
+	{name="outros", description="Outros", icon="fa-box"}
 }
-
-
-Config.Weapons = {  -- Armas que se podem ser devolvidas
+-- Armas que se podem ser devolvidas
+Config.Weapons = {
 	--Armas Brancas
 	{code ="WEAPON_DAGGER", category ="armasbrancas"}, 
 	{code ="WEAPON_BAT", category ="armasbrancas"},
@@ -139,23 +149,3 @@ Config.Weapons = {  -- Armas que se podem ser devolvidas
 	{code ="WEAPON_HAZARDCAN", category ="outros"},
 	{code ="WEAPON_FERTILIZERCAN", category ="outros"}
 }
-
---Bots Discord Logs--
---Gerar codigo
-Config.BotG = 'webhook_aqui'
-Config.BotG_Cor = '#00FF00'
---Apagar codigo
-Config.BotA = 'webhook_aqui'
-Config.BotA_Cor = '#FF0000'
---Utilizar codigo
-Config.BotU = 'webhook_aqui'
-Config.BotU_Cor = '#0000FF'
--- Kick tentativas de usar cheats
-Config.BotC = 'webhook_aqui'
-Config.BotC_Cor = '#0000FF'
-
-
---Gerar as matriculas [Não mexer - A menos que a sua garagem seija diferente]
-Config.PlateLetters  = 3
-Config.PlateNumbers  = 3
-Config.PlateUseSpace = true

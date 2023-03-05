@@ -39,8 +39,8 @@ function GeneratePlate()
 			generatedPlate = string.upper(GetRandomLetter(Config.PlateLetters) .. GetRandomNumber(Config.PlateNumbers))
 		end
 
-		ESX.TriggerServerCallback('zcmg_recompensa:isPlateTaken', function (isPlateTaken)
-			if not isPlateTaken then
+		ESX.TriggerServerCallback('zcmg_recompensa:verficar_matricula', function (matricula)
+			if not matricula then
 				doBreak = true
 			end
 		end, generatedPlate)
@@ -53,15 +53,20 @@ function GeneratePlate()
 	return generatedPlate
 end
 
-function verificarnumero(str)
-	local number = tonumber(str)
+function input_number(tipo, data, titulo, numero, inverter)
+	local input = lib.inputDialog(titulo, {
+		{label = numero, type="number"}
+	})
 
-	if str == "" then
-		return false
-	elseif number == nil then
-		return false
+	if not input then return end
+
+	if input[1] ~= nil then
+		if inverter then
+			TriggerServerEvent('zcmg_recompensa:gerar', tipo, data ,input[1])
+		else
+			TriggerServerEvent('zcmg_recompensa:gerar', tipo, input[1], data)
+		end
 	else
-		return true
+		lib.notify({description = 'Quantidade não é válida', type = 'error'})
 	end
-	
 end
