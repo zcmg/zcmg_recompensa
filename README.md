@@ -11,14 +11,14 @@ Desenvolvido por: **zcmg#5307**
 
 
 ## V3.0
--Convertido para ox_lib
--Compativel com ESX Legacy
--Codigo melhorado e reduzido
--Consultas convertidas para ox mysql
--Codigo gerado é copiado automaticamente para a area de transferencia
--Ficheiro config melhorado
--Adiciona matricula as logs dos veiculos
--Lista de admins com premisões para usar o script
+-Convertido para ox_lib</br>
+-Compativel com ESX Legacy</br>
+-Codigo melhorado e reduzido</br>
+-Consultas convertidas para ox mysql</br>
+-Codigo gerado é copiado automaticamente para a area de transferencia</br>
+-Ficheiro config melhorado</br>
+-Adiciona matricula as logs dos veiculos</br>
+-Lista de admins com premisões para usar o script</br>
 
 Tudo feito atrazes de menus.
 /menurecompensa
