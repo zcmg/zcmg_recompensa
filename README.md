@@ -1,14 +1,18 @@
 **FiveM ESX Script**
 
 <div align="center">
-<img src="https://media.discordapp.net/attachments/859508698879885312/1082054348571418665/image.png"/></br>
-<img src="https://media.discordapp.net/attachments/859508698879885312/1082054542889332898/image.png"/>
+![Animação](https://github.com/user-attachments/assets/15208b3f-6c79-4a38-8e78-a139d030d058)
 </div>
 
 Script para poder devolver items/dinheiro/armas/carros etc aos players
 
 Desenvolvido por: **zcmg#5307**
 
+## V3.1
+-Possivel apagar os admins (Apenas com o codigo definido no config | default: zcmg)</br>
+-Adicionado logs ao apagar os admins</br>
+-Adicionado debug(aparece na consola) das logs do discord (ON/OFF config)</br>
+-Pequenas correções no código</br>
 
 ## V3.0
 -Convertido para ox_lib</br>

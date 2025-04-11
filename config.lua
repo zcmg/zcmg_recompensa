@@ -1,10 +1,15 @@
 Config = {}
 
+--Codigo para poder apagar os admins
+Config.CODIGOADMIN = "zcmg"
+
 --Logs Discord
+Config.LogDebug = true --Aparece a log na consola do servidor
 Config.Logs = {
 	Gerar = {Webhook = 'webhook_aqui', Cor = '00FF00'},
 	Apagar = {Webhook = 'webhook_aqui', Cor = '00FF00'},
 	Utilizar = {Webhook = 'webhook_aqui', Cor = '00FF00'},
+	ApagarAdmin = {Webhook = 'webhook_aqui', Cor = '00FF00'},
 	Cheater = {Webhook = 'webhook_aqui', Cor = '00FF00'},
 }
 

@@ -333,8 +333,7 @@ function lista_admins()
         local admins = {}
 
         for _,v in pairs(cb) do
-            table.insert(admins, {label = v.name, values = {'Grupo: '..v.group_admin, 'Identifier: '..v.identifier}, icon = 'fa-user'})
-            local info_admin = ''
+            table.insert(admins, {label = v.name, values = {'Grupo: '..v.group_admin, 'Identifier: '..v.identifier}, args = {identifier = v.identifier, name=  v.name}, icon = 'fa-user'})
         end
 
         lib.registerMenu({
@@ -344,8 +343,22 @@ function lista_admins()
             onClose = function(key)
                 lib.showMenu('menu_recompensa')
             end,
-        })
+        }, function(selected, scrollIndex, args)
+            confirmar_apagar_admin(args)
+        end)
 
         lib.showMenu('menu_admins')
     end)
+end
+
+function confirmar_apagar_admin(info)
+    local input = lib.inputDialog('Apagar Admin '..info.name..'', {'Código de Admin'})
+
+    if not input then return end
+
+    if input[1] ~= nil and input[1] == Config.CODIGOADMIN then
+        TriggerServerEvent('zcmg_recompensa:apagar_admin', info)
+    else
+        lib.notify({description = 'Código não é válido', type = 'error'})
+    end
 end

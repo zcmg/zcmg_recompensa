@@ -151,7 +151,7 @@ end)
 RegisterServerEvent('zcmg_recompensa:apagar')
 AddEventHandler('zcmg_recompensa:apagar', function(codigo)
 	local _source = source
-	local xPlayer = ESX.GetPlayerFromId(source)
+	local nome = GetPlayerName(_source)
 		
 	if admin(_source) then
 		MySQL.query('SELECT * FROM zcmg_recompensa WHERE code = ?', {codigo},
@@ -166,6 +166,21 @@ AddEventHandler('zcmg_recompensa:apagar', function(codigo)
 		end)	
 	else
 		logs('**'..nome..' ('.._source..')** tentou usar cheats para apagar um código',Config.Logs.Cheater.Webhook, Config.Logs.Cheater.Cor)
+		DropPlayer(_source, 'Boa tentativa 😈')
+	end
+end)
+
+RegisterServerEvent('zcmg_recompensa:apagar_admin')
+AddEventHandler('zcmg_recompensa:apagar_admin', function(info)
+	local _source = source
+	local nome = GetPlayerName(_source)
+
+	if admin(_source) then
+		MySQL.update('DELETE FROM zcmg_recompensa_admins WHERE identifier = ?', {info.identifier})
+		logs('**'..GetPlayerName(_source)..' ('.._source..')** apagou o admin: **'..info.name..'** da lista de admins!', Config.Logs.ApagarAdmin.Webhook, Config.Logs.ApagarAdmin.Cor)	
+		TriggerClientEvent('ox_lib:notify', _source, { type = 'success', description = 'Admin removido da lista de admins!'})	
+	else
+		logs('**'..nome..' ('.._source..')** tentou usar cheats para apagar um código', Config.Logs.Cheater.Webhook, Config.Logs.Cheater.Cor)
 		DropPlayer(_source, 'Boa tentativa 😈')
 	end
 end)
