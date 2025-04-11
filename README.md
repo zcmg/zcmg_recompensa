@@ -1,7 +1,7 @@
 **FiveM ESX Script**
 
 <div align="center">
-![Animação](https://github.com/user-attachments/assets/15208b3f-6c79-4a38-8e78-a139d030d058)
+![Animação](https://github.com/user-attachments/assets/10a67cc7-69b0-4c14-aa9d-fe5db74a8776)
 </div>
 
 Script para poder devolver items/dinheiro/armas/carros etc aos players
