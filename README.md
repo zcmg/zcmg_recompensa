@@ -1,6 +1,8 @@
 **FiveM ESX Script**
 
-  ![Captura de ecrã 2025-04-11 215404](https://github.com/user-attachments/assets/ee206b13-fae4-4f85-bae7-e5cf40f69d36)
+![Captura de ecrã 2025-04-11 215404](https://github.com/user-attachments/assets/ee206b13-fae4-4f85-bae7-e5cf40f69d36)
+![Animação](https://github.com/user-attachments/assets/2e5dd157-c069-4e89-ad81-dcfa974dfb66)
+
 
 Script para poder devolver items/dinheiro/armas/carros etc aos players
 
